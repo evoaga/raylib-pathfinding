@@ -75,6 +75,8 @@
 		"thread": "cpp",
 		"variant": "cpp",
 		"queue": "cpp",
-		"cfloat": "cpp"
+		"cfloat": "cpp",
+		"bitset": "cpp",
+		"cstring": "cpp"
 	}
 }

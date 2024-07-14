@@ -1,19 +1,25 @@
-#include "movement.hpp"
+#include "Movement.hpp"
+#include "Player.hpp"
 
-void moveAlongPath(std::vector<Point>& pathThetaStar, std::vector<Point>::size_type& currentPathIndexThetaStar, Vector3& currentPositionThetaStar, bool& isMovingThetaStar) {
-    if (isMovingThetaStar && currentPathIndexThetaStar < pathThetaStar.size()) {
-        Vector3 targetPosition = {pathThetaStar[currentPathIndexThetaStar].x, pathThetaStar[currentPathIndexThetaStar].y, pathThetaStar[currentPathIndexThetaStar].z};
-        Vector3 direction = Vector3Subtract(targetPosition, currentPositionThetaStar);
+void moveAlongPath(const std::vector<Point>& path, std::vector<Point>::size_type& currentPathIndex, Player& player, bool& isMoving) {
+    if (isMoving && currentPathIndex < path.size()) {
+        Vector3 targetPosition = {path[currentPathIndex].x, path[currentPathIndex].y, path[currentPathIndex].z};
+        Vector3 direction = Vector3Subtract(targetPosition, player.getPosition());
         float distance = Vector3Length(direction);
-        float moveSpeed = 3.0f; 
+        float moveSpeed = player.getSpeed(); // Use player's speed
         float frameTime = GetFrameTime();
 
         if (distance > 0.1f) {
             direction = Vector3Scale(Vector3Normalize(direction), moveSpeed * frameTime);
-            currentPositionThetaStar = Vector3Add(currentPositionThetaStar, direction);
+            Vector3 newPosition = Vector3Add(player.getPosition(), direction);
+            player.setPosition(newPosition.x, newPosition.y, newPosition.z);
         } else {
-            currentPositionThetaStar = targetPosition;
-            currentPathIndexThetaStar++;
+            player.setPosition(targetPosition.x, targetPosition.y, targetPosition.z);
+            currentPathIndex++;
+        }
+
+        if (currentPathIndex >= path.size()) {
+            isMoving = false;
         }
     }
 }

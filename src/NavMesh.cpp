@@ -1,4 +1,4 @@
-#include "nav_mesh.hpp"
+#include "NavMesh.hpp"
 #include "delaunator.hpp"
 
 bool edgeIntersectsObstacle(const Edge& edge, const Vector3& obstacle, float obstacleSize) {

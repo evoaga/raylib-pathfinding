@@ -1,4 +1,4 @@
-// engine.hpp
+// Engine.hpp
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
 

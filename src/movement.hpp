@@ -1,10 +1,12 @@
 #ifndef MOVEMENT_HPP
 #define MOVEMENT_HPP
 
-#include <vector>
 #include "raylib.h"
+#include "GameObject.hpp"
 #include "thetastar.hpp"
+#include "Player.hpp"
+#include <vector>
 
-void moveAlongPath(std::vector<Point>& pathThetaStar, std::vector<Point>::size_type& currentPathIndexThetaStar, Vector3& currentPositionThetaStar, bool& isMovingThetaStar);
+void moveAlongPath(const std::vector<Point>& path, std::vector<Point>::size_type& currentPathIndex, Player& player, bool& isMoving);
 
-#endif
+#endif // MOVEMENT_HPP

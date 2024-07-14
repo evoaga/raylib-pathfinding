@@ -1,22 +1,28 @@
-#include "input.hpp"
+#include "Input.hpp"
 #include "raylib.h"
-#include "nav_mesh.hpp"
-#include "obstacles.hpp"
+#include "NavMesh.hpp"
+#include "Obstacles.hpp"
 #include "thetastar.hpp"
 #include "utils.hpp"
+#include "GameObject.hpp"
 
-void HandleKeyPressR(std::vector<Vector3>& obstaclePositions, NavMesh& mesh, std::vector<Point>& initialPoints, std::vector<Polygon>& polygons, Point& goal, bool& goalSet, Vector3& currentPositionThetaStar, float obstacleSize, std::vector<Point>& pathThetaStar, std::vector<Point>::size_type& currentPathIndexThetaStar, bool& isMovingThetaStar) {
+void HandleKeyPressR(std::vector<GameObject>& obstacles, NavMesh& mesh, std::vector<Point>& initialPoints, std::vector<Polygon>& polygons, Point& goal, bool& goalSet, GameObject& player, float obstacleSize, std::vector<Point>& pathThetaStar, std::vector<Point>::size_type& currentPathIndexThetaStar, bool& isMovingThetaStar) {
     if (IsKeyPressed(KEY_R)) {
-        updateObstacles(obstaclePositions, mesh, initialPoints, polygons, goal, goalSet, currentPositionThetaStar, obstacleSize, pathThetaStar);
+        updateObstacles(obstacles, mesh, initialPoints, polygons, goal, goalSet, player, obstacleSize, pathThetaStar);
         currentPathIndexThetaStar = 0;
         isMovingThetaStar = false;
     }
 }
 
-void HandleMouseInput(const Camera3D& camera, std::vector<Point>& initialPoints, NavMesh& mesh, std::vector<Vector3>& obstaclePositions, float obstacleSize, std::vector<Polygon>& polygons, Point& goal, bool& goalSet, Vector3& currentPositionThetaStar, std::vector<Point>& pathThetaStar, std::vector<Point>::size_type& currentPathIndexThetaStar, bool& isMovingThetaStar) {
+void HandleMouseInput(const Camera3D& camera, std::vector<Point>& initialPoints, NavMesh& mesh, std::vector<GameObject>& obstacles, float obstacleSize, std::vector<Polygon>& polygons, Point& goal, bool& goalSet, GameObject& player, std::vector<Point>& pathThetaStar, std::vector<Point>::size_type& currentPathIndexThetaStar, bool& isMovingThetaStar) {
     if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
         Vector3 mousePosition = GetMousePosition3D(camera);
         goal = Point(mousePosition.x, mousePosition.y, mousePosition.z);
+
+        std::vector<Vector3> obstaclePositions;
+        for (const auto& obstacle : obstacles) {
+            obstaclePositions.push_back(obstacle.getPosition());
+        }
 
         goal = findNearestValidPoint(goal, obstaclePositions, obstacleSize);
         goalSet = true;
@@ -25,7 +31,7 @@ void HandleMouseInput(const Camera3D& camera, std::vector<Point>& initialPoints,
         bool obstacleInPath = false;
 
         for (const auto& pos : obstaclePositions) {
-            if (segmentIntersectsObstacle(currentPositionThetaStar, goalVec, pos, obstacleSize)) {
+            if (segmentIntersectsObstacle(player.getPosition(), goalVec, pos, obstacleSize)) {
                 obstacleInPath = true;
                 break;
             }
@@ -34,15 +40,15 @@ void HandleMouseInput(const Camera3D& camera, std::vector<Point>& initialPoints,
         if (obstacleInPath) {
             std::vector<Point> pointsWithGoalAndCurrent = initialPoints;
             pointsWithGoalAndCurrent.push_back(goal);
-            pointsWithGoalAndCurrent.push_back(Point(currentPositionThetaStar.x, currentPositionThetaStar.y, currentPositionThetaStar.z));
+            pointsWithGoalAndCurrent.push_back(Point(player.getPosition().x, player.getPosition().y, player.getPosition().z));
             updateNavMesh(mesh, pointsWithGoalAndCurrent, obstaclePositions, obstacleSize, polygons);
 
-            Point currentPointThetaStar(currentPositionThetaStar.x, currentPositionThetaStar.y, currentPositionThetaStar.z);
+            Point currentPointThetaStar(player.getPosition().x, player.getPosition().y, player.getPosition().z);
             pathThetaStar = thetaStar(mesh, currentPointThetaStar, goal, obstaclePositions, obstacleSize);
             currentPathIndexThetaStar = 0;
             isMovingThetaStar = true;
         } else {
-            pathThetaStar = { Point(currentPositionThetaStar.x, currentPositionThetaStar.y, currentPositionThetaStar.z), goal };
+            pathThetaStar = { Point(player.getPosition().x, player.getPosition().y, player.getPosition().z), goal };
             currentPathIndexThetaStar = 0;
             isMovingThetaStar = true;
         }

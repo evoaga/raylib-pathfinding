@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <limits>
 #include <cfloat>
-#include "vector_math.hpp"
+#include "VectorMath.hpp"
 #include "utils.hpp"
 
 struct Point {

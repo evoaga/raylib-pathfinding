@@ -1,4 +1,4 @@
-#include "camera.hpp"
+#include "Camera.hpp"
 
 Camera InitCamera() {
     Camera camera = { 0 };

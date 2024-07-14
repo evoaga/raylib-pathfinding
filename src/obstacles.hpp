@@ -1,10 +1,14 @@
 #ifndef OBSTACLES_HPP
 #define OBSTACLES_HPP
 
-#include <vector>
+#include "NavMesh.hpp"
+#include "GameObject.hpp"
+#include "thetastar.hpp"
 #include "raylib.h"
-#include "nav_mesh.hpp"
+#include <vector>
 
-void updateObstacles(std::vector<Vector3>& obstaclePositions, NavMesh& mesh, const std::vector<Point>& initialPoints, std::vector<Polygon>& polygons, Point& goal, bool goalSet, Vector3& currentPositionThetaStar, float obstacleSize, std::vector<Point>& pathThetaStar);
+void updateObstacles(std::vector<GameObject>& obstacles, NavMesh& mesh, const std::vector<Point>& initialPoints, std::vector<Polygon>& polygons, Point& goal, bool goalSet, GameObject& player, float obstacleSize, std::vector<Point>& pathThetaStar);
+std::vector<GameObject> generateObstaclePositions(int count, float mapSize);
+bool segmentIntersectsObstacle(Vector3 start, Vector3 end, const Vector3& obstacle, float obstacleSize);
 
-#endif
+#endif // OBSTACLES_HPP

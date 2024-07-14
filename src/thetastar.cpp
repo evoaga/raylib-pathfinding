@@ -1,4 +1,5 @@
 #include "thetastar.hpp"
+#include "Obstacles.hpp"
 
 void NavMesh::addVertex(const Point& p) {
     vertices.push_back(p);

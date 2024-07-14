@@ -1,10 +1,15 @@
 #ifndef SCENE_HPP
 #define SCENE_HPP
 
-#include <vector>
 #include "raylib.h"
-#include "nav_mesh.hpp"
+#include "NavMesh.hpp"
+#include "GameObject.hpp"
+#include "Player.hpp"
+#include <vector>
 
-void drawScene(const NavMesh& mesh, const std::vector<Polygon>& polygons, const std::vector<Vector3>& obstaclePositions, float obstacleSize, const Vector3& currentPositionThetaStar, bool goalSet, const Point& goal, const std::vector<Point>& pathThetaStar, const Camera3D& camera);
+void DrawHealthBarAbovePlayer(const Player& player, const Camera& camera);
+void DrawHealthBar(const Player& player);
+void DrawUI();
+void DrawScene(const NavMesh& mesh, const std::vector<Polygon>& polygons, const std::vector<GameObject>& obstacles, float obstacleSize, const Player& player, bool goalSet, const Point& goal, const std::vector<Point>& pathThetaStar, const Camera& camera);
 
-#endif
+#endif // SCENE_HPP
