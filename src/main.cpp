@@ -1,4 +1,3 @@
-// main.cpp
 #include "engine.hpp"
 
 auto main() -> int {

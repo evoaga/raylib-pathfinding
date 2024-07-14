@@ -1,6 +1,6 @@
 #include "utils.hpp"
 
-// Custom function to convert 2D mouse position to 3D point on ground plane
+// Function to convert 2D mouse position to 3D point on ground plane
 Vector3 GetMousePosition3D(Camera3D camera) {
     Vector2 mousePosition = GetMousePosition();
     Ray ray = GetMouseRay(mousePosition, camera);
