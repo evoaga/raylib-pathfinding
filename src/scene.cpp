@@ -8,7 +8,7 @@ void DrawHealthBarAbovePlayer(const Player& player, const Camera& camera) {
     float healthPercentage = static_cast<float>(player.getHealth()) / 100.0f;
 
     int barWidth = 50;
-    int barHeight = 5;
+    int barHeight = 10;
     int barX = static_cast<int>(screenPos.x) - barWidth / 2;
     int barY = static_cast<int>(screenPos.y) - 40;
 

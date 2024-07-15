@@ -53,7 +53,7 @@ void Run() {
     std::vector<Polygon> polygons;
     auto mesh = InitNavMesh(initialPoints, obstacles, obstacleSize, polygons);
 
-    Player player = PlayerFactory::createPlayer(5.0f, 0.0f, 5.0f); // Use PlayerFactory to create Player
+    Player player = PlayerFactory::createPlayer(5.0f, 0.0f, 5.0f);
     Point goal;
     bool goalSet = false;
     bool cameraAttached = true;
@@ -69,11 +69,16 @@ void Run() {
         HandleKeyPressR(obstacles, mesh, initialPoints, polygons, goal, goalSet, player, obstacleSize, pathThetaStar, currentPathIndexThetaStar, isMovingThetaStar);
         HandleMouseInput(camera, initialPoints, mesh, obstacles, obstacleSize, polygons, goal, goalSet, player, pathThetaStar, currentPathIndexThetaStar, isMovingThetaStar);
         moveAlongPath(pathThetaStar, currentPathIndexThetaStar, player, isMovingThetaStar);
-        
+
         if (IsKeyPressed(KEY_E)) {
-            player.takeDamage(2);
+            player.takeDamage(20);
         }
 
+        if (!player.isAlive()) {
+            if (player.shouldRespawn()) {
+                player.respawn(Vector3{5.0f, 0.0f, 5.0f}, 100);
+            }
+        }
 
         DrawScene(mesh, polygons, obstacles, obstacleSize, player, goalSet, goal, pathThetaStar, camera);
     }

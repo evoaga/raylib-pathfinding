@@ -29,7 +29,7 @@ std::vector<GameObject> generateObstaclePositions(int count, float mapSize) {
     for (int i = 0; i < count; ++i) {
         float x = static_cast<float>(rand() % static_cast<int>(mapSize));
         float z = static_cast<float>(rand() % static_cast<int>(mapSize));
-        obstacles.emplace_back(x, 0.0f, z);
+        obstacles.emplace_back(x, 0.5f, z);
     }
     return obstacles;
 }

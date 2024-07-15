@@ -6,7 +6,7 @@ void moveAlongPath(const std::vector<Point>& path, std::vector<Point>::size_type
         Vector3 targetPosition = {path[currentPathIndex].x, path[currentPathIndex].y, path[currentPathIndex].z};
         Vector3 direction = Vector3Subtract(targetPosition, player.getPosition());
         float distance = Vector3Length(direction);
-        float moveSpeed = player.getSpeed(); // Use player's speed
+        float moveSpeed = player.getSpeed();
         float frameTime = GetFrameTime();
 
         if (distance > 0.1f) {
