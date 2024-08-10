@@ -2,7 +2,8 @@
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
 
-namespace Engine {
+namespace Engine
+{
     void Run();
 }
 

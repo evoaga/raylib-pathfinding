@@ -1,6 +1,7 @@
 #include "Engine.hpp"
 
-auto main() -> int {
+auto main() -> int
+{
     Engine::Run();
     return 0;
 }

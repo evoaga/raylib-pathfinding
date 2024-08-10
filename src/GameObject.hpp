@@ -3,7 +3,8 @@
 
 #include "raylib.h"
 
-class GameObject {
+class GameObject
+{
 public:
     Vector3 position;
     Vector3 rotation;
@@ -15,30 +16,35 @@ public:
     GameObject(Vector3 pos, Vector3 rot, Vector3 scl)
         : position{pos}, rotation{rot}, scale{scl} {}
 
-    void setPosition(float x, float y, float z) {
+    void setPosition(float x, float y, float z)
+    {
         position = {x, y, z};
     }
 
-    void setRotation(float x, float y, float z) {
+    void setRotation(float x, float y, float z)
+    {
         rotation = {x, y, z};
     }
 
-    void setScale(float x, float y, float z) {
+    void setScale(float x, float y, float z)
+    {
         scale = {x, y, z};
     }
 
-    Vector3 getPosition() const {
+    Vector3 getPosition() const
+    {
         return position;
     }
 
-    Vector3 getRotation() const {
+    Vector3 getRotation() const
+    {
         return rotation;
     }
 
-    Vector3 getScale() const {
+    Vector3 getScale() const
+    {
         return scale;
     }
-
 };
 
 #endif // GAMEOBJECT_HPP

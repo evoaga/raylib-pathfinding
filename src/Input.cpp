@@ -1,26 +1,31 @@
-#include "Input.hpp"
 #include "raylib.h"
+#include "Input.hpp"
 #include "NavMesh.hpp"
 #include "Obstacles.hpp"
-#include "thetastar.hpp"
-#include "utils.hpp"
+#include "ThetaStar.hpp"
+#include "Utils.hpp"
 #include "GameObject.hpp"
 
-void HandleKeyPressR(std::vector<GameObject>& obstacles, NavMesh& mesh, std::vector<Point>& initialPoints, std::vector<Polygon>& polygons, Point& goal, bool& goalSet, GameObject& player, float obstacleSize, std::vector<Point>& pathThetaStar, std::vector<Point>::size_type& currentPathIndexThetaStar, bool& isMovingThetaStar) {
-    if (IsKeyPressed(KEY_R)) {
+void HandleKeyPressR(std::vector<GameObject> &obstacles, NavMesh &mesh, std::vector<Point> &initialPoints, std::vector<Polygon> &polygons, Point &goal, bool &goalSet, GameObject &player, float obstacleSize, std::vector<Point> &pathThetaStar, std::vector<Point>::size_type &currentPathIndexThetaStar, bool &isMovingThetaStar)
+{
+    if (IsKeyPressed(KEY_R))
+    {
         updateObstacles(obstacles, mesh, initialPoints, polygons, goal, goalSet, player, obstacleSize, pathThetaStar);
         currentPathIndexThetaStar = 0;
         isMovingThetaStar = false;
     }
 }
 
-void HandleMouseInput(const Camera3D& camera, std::vector<Point>& initialPoints, NavMesh& mesh, std::vector<GameObject>& obstacles, float obstacleSize, std::vector<Polygon>& polygons, Point& goal, bool& goalSet, GameObject& player, std::vector<Point>& pathThetaStar, std::vector<Point>::size_type& currentPathIndexThetaStar, bool& isMovingThetaStar) {
-    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+void HandleMouseInput(const Camera3D &camera, std::vector<Point> &initialPoints, NavMesh &mesh, std::vector<GameObject> &obstacles, float obstacleSize, std::vector<Polygon> &polygons, Point &goal, bool &goalSet, GameObject &player, std::vector<Point> &pathThetaStar, std::vector<Point>::size_type &currentPathIndexThetaStar, bool &isMovingThetaStar)
+{
+    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
+    {
         Vector3 mousePosition = GetMousePosition3D(camera);
         goal = Point(mousePosition.x, mousePosition.y, mousePosition.z);
 
         std::vector<Vector3> obstaclePositions;
-        for (const auto& obstacle : obstacles) {
+        for (const auto &obstacle : obstacles)
+        {
             obstaclePositions.push_back(obstacle.getPosition());
         }
 
@@ -30,14 +35,17 @@ void HandleMouseInput(const Camera3D& camera, std::vector<Point>& initialPoints,
         Vector3 goalVec = {goal.x, goal.y, goal.z};
         bool obstacleInPath = false;
 
-        for (const auto& pos : obstaclePositions) {
-            if (segmentIntersectsObstacle(player.getPosition(), goalVec, pos, obstacleSize)) {
+        for (const auto &pos : obstaclePositions)
+        {
+            if (segmentIntersectsObstacle(player.getPosition(), goalVec, pos, obstacleSize))
+            {
                 obstacleInPath = true;
                 break;
             }
         }
 
-        if (obstacleInPath) {
+        if (obstacleInPath)
+        {
             std::vector<Point> pointsWithGoalAndCurrent = initialPoints;
             pointsWithGoalAndCurrent.push_back(goal);
             pointsWithGoalAndCurrent.push_back(Point(player.getPosition().x, player.getPosition().y, player.getPosition().z));
@@ -47,8 +55,10 @@ void HandleMouseInput(const Camera3D& camera, std::vector<Point>& initialPoints,
             pathThetaStar = thetaStar(mesh, currentPointThetaStar, goal, obstaclePositions, obstacleSize);
             currentPathIndexThetaStar = 0;
             isMovingThetaStar = true;
-        } else {
-            pathThetaStar = { Point(player.getPosition().x, player.getPosition().y, player.getPosition().z), goal };
+        }
+        else
+        {
+            pathThetaStar = {Point(player.getPosition().x, player.getPosition().y, player.getPosition().z), goal};
             currentPathIndexThetaStar = 0;
             isMovingThetaStar = true;
         }
