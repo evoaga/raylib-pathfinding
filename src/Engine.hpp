@@ -1,10 +1,9 @@
-// Engine.hpp
-#ifndef ENGINE_HPP
-#define ENGINE_HPP
+#pragma once
+
+#include <entt/entt.hpp>
 
 namespace Engine
 {
+    void InitEntities(entt::registry &registry);
     void Run();
 }
-
-#endif // ENGINE_HPP

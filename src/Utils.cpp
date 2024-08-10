@@ -1,7 +1,53 @@
 #include "Utils.hpp"
 
-// Function to convert 2D mouse position to 3D point on ground plane
-Vector3 GetMousePosition3D(Camera3D camera)
+auto GetRandomColor() -> Color
+{
+    return Color{
+        static_cast<unsigned char>(rand() % 256), // Red component
+        static_cast<unsigned char>(rand() % 256), // Green component
+        static_cast<unsigned char>(rand() % 256), // Blue component
+        255                                       // Alpha component
+    };
+}
+
+auto vector3ToPoint(const Vector3 &vec) -> Point
+{
+    return Point{vec.x, vec.y, vec.z};
+}
+
+auto generateCubePolygon(const TransformComponent &transform) -> Polygon
+{
+    std::vector<Point> points;
+    const float buffer = 0.5f + 0.0001f;
+    const Vector3 &pos = transform.position;
+    const Vector3 &rot = transform.rotation;
+    const Vector3 &scale = transform.scale;
+
+    std::vector<Vector3> localVertices = {
+        {-scale.x / 2 - buffer, 0.0f, -scale.z / 2 - buffer},
+        {-scale.x / 2 - buffer, 0.0f, scale.z / 2 + buffer},
+        {scale.x / 2 + buffer, 0.0f, scale.z / 2 + buffer},
+        {scale.x / 2 + buffer, 0.0f, -scale.z / 2 - buffer},
+    };
+
+    for (auto &vertex : localVertices)
+    {
+        float rotatedX = cos(rot.y) * vertex.x - sin(rot.y) * vertex.z;
+        float rotatedZ = sin(rot.y) * vertex.x + cos(rot.y) * vertex.z;
+        points.emplace_back(pos.x + rotatedX, 0.0f, pos.z + rotatedZ);
+    }
+
+    return Polygon{points};
+}
+
+auto CheckCollisionAABB(Vector3 position, Vector3 scale, Vector3 obstaclePos, Vector3 obstacleScale) -> bool
+{
+    return (fabs(position.x - obstaclePos.x) * 2 < (scale.x + obstacleScale.x)) &&
+           (fabs(position.y - obstaclePos.y) * 2 < (scale.y + obstacleScale.y)) &&
+           (fabs(position.z - obstaclePos.z) * 2 < (scale.z + obstacleScale.z));
+}
+
+auto GetMousePosition3D(Camera3D camera) -> Vector3
 {
     Vector2 mousePosition = GetMousePosition();
     Ray ray = GetMouseRay(mousePosition, camera);
@@ -14,7 +60,7 @@ Vector3 GetMousePosition3D(Camera3D camera)
 }
 
 // Function to check if a line segment intersects with a bounding box
-bool CheckCollisionSegmentBox(Vector3 start, Vector3 end, BoundingBox box)
+auto CheckCollisionSegmentBox(Vector3 start, Vector3 end, BoundingBox box) -> bool
 {
     Vector3 d = Vector3Subtract(end, start);
 

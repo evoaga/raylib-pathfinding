@@ -1,98 +1,116 @@
+#include <entt/entt.hpp>
 #include "raylib.h"
-#include "Engine.hpp"
+#include "Components/Components.hpp"
+#include "Systems/MovementSystem.hpp"
+#include "Systems/SimpleMovementSystem.hpp"
+#include "Systems/RenderSystem.hpp"
+#include "Systems/RenderUISystem.hpp"
+#include "Systems/InputSystem.hpp"
+#include "Systems/CameraSystem.hpp"
+#include "Systems/PickingSystem.hpp"
+#include "Systems/MinionSystem.hpp"
+#include "Systems/CollisionSystem.hpp"
 #include "NavMesh.hpp"
-#include "Obstacles.hpp"
-#include "Movement.hpp"
 #include "ThetaStar.hpp"
-#include "Input.hpp"
-#include "Scene.hpp"
-#include "Camera.hpp"
-#include "Utils.hpp"
-#include "GameObject.hpp"
-#include "Player.hpp"
-#include "PlayerFactory.hpp"
-#include <ctime>
-#include <vector>
+#include "Obstacles.hpp"
 
 namespace Engine
 {
 
-    void InitWindowAndSeed(int screenWidth, int screenHeight)
+    auto InitEntities(entt::registry &registry) -> void
     {
-        InitWindow(screenWidth, screenHeight, "3D Navigation Mesh Theta* Visualization");
-        srand(static_cast<unsigned int>(time(0)));
-    }
+        // Create player entity
+        const auto player = registry.create();
+        registry.emplace<TransformComponent>(player, TransformComponent{Vector3{0.0f, 1.0f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{1.0f, 1.0f, 1.0f}});
+        registry.emplace<Health>(player, 100, 100);
+        registry.emplace<Speed>(player, 5.0f);
+        registry.emplace<PathComponent>(player, PathComponent{Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f}, {0}});
+        registry.emplace<CollisionComponent>(player);
+        registry.emplace<Player>(player);
 
-    std::vector<Point> InitInitialPoints()
-    {
-        return {
-            Point(0.0f, 0.0f, 0.0f),
-            Point(10.0f, 2.0f, 0.0f),
-            Point(10.0f, 0.0f, 10.0f),
-            Point(0.0f, -2.0f, 10.0f)};
-    }
+        // Create camera entity
+        const auto cameraEntity = registry.create();
+        Camera camera;
+        InitCamera(camera);
+        CameraComponent cameraComponent = CameraComponent{camera, true, 1.0f};
+        registry.emplace<CameraComponent>(cameraEntity, cameraComponent);
 
-    NavMesh InitNavMesh(std::vector<Point> &initialPoints, std::vector<GameObject> &obstacles, float obstacleSize, std::vector<Polygon> &polygons)
-    {
-        std::vector<Vector3> obstaclePositions;
-        for (const auto &obstacle : obstacles)
+        // Create minions
+        for (int i = 0; i < 5; ++i)
         {
-            obstaclePositions.push_back(obstacle.getPosition());
+            const auto minion = registry.create();
+            registry.emplace<TransformComponent>(minion, TransformComponent{Vector3{(float)i * 2.0f, 1.0f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.5f, 0.5f, 0.5f}});
+            registry.emplace<Health>(minion, 50, 50);
+            registry.emplace<Speed>(minion, 4.0f);
+            registry.emplace<PathComponent>(minion, PathComponent{Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f}, {0}, false});
+            registry.emplace<CollisionComponent>(minion);
+            registry.emplace<Minion>(minion, i);
         }
+
+        // Create platform entity
+        const auto platform = registry.create();
+        registry.emplace<TransformComponent>(platform, TransformComponent{Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{10.0f, 1.0f, 10.0f}});
+        registry.emplace<Platform>(platform);
+
+        // Create navmesh entity
+        const auto navmeshEntity = registry.create();
+        auto obstacles = generateObstaclesTransform(120, 80.0f);
+
+        std::vector<Polygon> obstaclePolygons;
+        for (const auto &[transform, type] : obstacles)
+        {
+            Polygon polygon;
+            polygon = generateCubePolygon(transform);
+            obstaclePolygons.push_back(polygon);
+        }
+
         NavMesh mesh;
-        initializeNavMesh(mesh, initialPoints, obstaclePositions, obstacleSize, polygons);
-        return mesh;
+        BuildNavMesh(mesh, obstaclePolygons);
+        registry.emplace<NavMeshComponent>(navmeshEntity, NavMeshComponent{mesh, obstaclePolygons});
+
+        // Create obstacles
+        for (const auto &[transform, type] : obstacles)
+        {
+            const auto obstacleEntity = registry.create();
+            registry.emplace<TransformComponent>(obstacleEntity, transform);
+            registry.emplace<Obstacle>(obstacleEntity, GetRandomColor());
+            registry.emplace<Selected>(obstacleEntity, false);
+        }
     }
 
-    void Run()
+    auto Run() -> void
     {
-        const int screenWidth = 1200;
-        const int screenHeight = 900;
+        InitWindow(1200, 900, "entt-raylib");
 
-        InitWindowAndSeed(screenWidth, screenHeight);
-
-        auto initialPoints = InitInitialPoints();
-        auto obstacles = generateObstaclePositions(5, 10.0f);
-        float obstacleSize = 1.0f;
-
-        std::vector<Polygon> polygons;
-        auto mesh = InitNavMesh(initialPoints, obstacles, obstacleSize, polygons);
-
-        Player player = PlayerFactory::createPlayer(5.0f, 0.0f, 5.0f);
-        Point goal;
-        bool goalSet = false;
-        bool cameraAttached = true;
-
-        std::vector<Point> pathThetaStar;
-        std::vector<Point>::size_type currentPathIndexThetaStar = 0;
-        bool isMovingThetaStar = false;
-
-        Camera camera = InitCamera();
+        entt::registry registry;
+        InitEntities(registry);
 
         while (!WindowShouldClose())
         {
-            HandleCameraMovement(camera, player.getPosition(), cameraAttached);
-            HandleKeyPressR(obstacles, mesh, initialPoints, polygons, goal, goalSet, player, obstacleSize, pathThetaStar, currentPathIndexThetaStar, isMovingThetaStar);
-            HandleMouseInput(camera, initialPoints, mesh, obstacles, obstacleSize, polygons, goal, goalSet, player, pathThetaStar, currentPathIndexThetaStar, isMovingThetaStar);
-            moveAlongPath(pathThetaStar, currentPathIndexThetaStar, player, isMovingThetaStar);
+            auto cameraView = registry.view<CameraComponent>();
+            auto &cameraComponent = cameraView.get<CameraComponent>(cameraView.front());
 
-            if (IsKeyPressed(KEY_E))
-            {
-                player.takeDamage(20);
-            }
+            BeginDrawing();
 
-            if (!player.isAlive())
-            {
-                if (player.shouldRespawn())
-                {
-                    player.respawn(Vector3{5.0f, 0.0f, 5.0f}, 100);
-                }
-            }
+            ClearBackground(RAYWHITE);
+            BeginMode3D(cameraComponent.camera);
+            PickingSystem(registry);
+            InputSystem(registry);
+            CollisionSystem(registry);
+            MinionSystem(registry);
+            SimpleMovementSystem(registry);
+            MovementSystem(registry);
+            CameraSystem(registry);
 
-            DrawScene(mesh, polygons, obstacles, obstacleSize, player, goalSet, goal, pathThetaStar, camera);
+            RenderSystem(registry);
+            EndMode3D();
+
+            RenderUISystem(registry);
+
+            EndDrawing();
         }
 
         CloseWindow();
     }
 
-} // namespace Engine
+}

@@ -1,5 +1,4 @@
-#ifndef THETASTAR_HPP
-#define THETASTAR_HPP
+#pragma once
 
 #include "raylib.h"
 #include <vector>
@@ -10,7 +9,7 @@
 #include <limits>
 #include <cfloat>
 #include "VectorMath.hpp"
-#include "Utils.hpp"
+#include <utility>
 
 struct Point
 {
@@ -22,6 +21,16 @@ struct Point
     {
         return x == other.x && y == other.y && z == other.z;
     }
+
+    bool operator!=(const Point &other) const
+    {
+        return !(*this == other);
+    }
+};
+
+struct Polygon
+{
+    std::vector<Point> vertices;
 };
 
 // Hash function for Point to use in unordered_map
@@ -29,31 +38,32 @@ struct PointHash
 {
     std::size_t operator()(const Point &p) const
     {
-        return std::hash<float>()(p.x) ^ std::hash<float>()(p.y) ^ std::hash<float>()(p.z);
+        std::size_t h1 = std::hash<float>{}(p.x);
+        std::size_t h2 = std::hash<float>{}(p.y);
+        std::size_t h3 = std::hash<float>{}(p.z);
+        return h1 ^ (h2 << 1) ^ (h3 << 2);
     }
 };
 
-// Edge connecting two points
-struct Edge
+struct NavMesh
 {
-    Point p1, p2;
-    float cost;
-
-    Edge(Point p1, Point p2, float cost) : p1(p1), p2(p2), cost(cost) {}
-};
-
-class NavMesh
-{
-public:
     std::vector<Point> vertices;
-    std::vector<Edge> edges;
 
-    void addVertex(const Point &p);
-    void addEdge(const Point &p1, const Point &p2, float cost);
-    void clear();
+    void addVertex(const Point &p)
+    {
+        vertices.push_back(p);
+    }
+
+    void removeVertex(const Point &p)
+    {
+        vertices.erase(std::remove(vertices.begin(), vertices.end(), p), vertices.end());
+    }
+
+    void clear()
+    {
+        vertices.clear();
+    }
 };
-
-float heuristic(const Point &p1, const Point &p2);
 
 struct Node
 {
@@ -70,9 +80,6 @@ struct Node
     }
 };
 
-bool lineOfSight(const Point &s, const Point &sPrime, const std::vector<Vector3> &obstaclePositions, float obstacleSize);
-std::vector<Point> thetaStar(const NavMesh &mesh, const Point &start, const Point &goal, const std::vector<Vector3> &obstaclePositions, float obstacleSize);
-bool isPointInsideObstacle(const Point &point, const Vector3 &obstacle, float obstacleSize);
-Point findNearestValidPoint(const Point &point, const std::vector<Vector3> &obstaclePositions, float obstacleSize);
-
-#endif // THETASTAR_HPP
+float heuristic(const Point &p1, const Point &p2);
+bool lineOfSight(const Point &start, const Point &end, const std::vector<Polygon> &polygons);
+std::vector<Point> thetaStar(NavMesh &mesh, const Point &start, const Point &goal, const std::vector<Polygon> &obstaclePolygons);

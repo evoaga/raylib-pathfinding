@@ -1,3 +1,51 @@
+# Ignore the build folder
+build/
+
+# Ignore resources folder
+resources/
+
+# Ignore the build_and_run.ps1 script
+build_and_run.ps1
+
+
+# Ignore .vs and .vscode folders
+.vs/
+.vscode/
+
+# Ignore common build artifacts
+*.o
+*.obj
+*.dll
 *.exe
-*.dsym
-main
+*.so
+*.dylib
+*.lib
+*.a
+*.exp
+*.log
+*.pyc
+*.pyo
+*.pdb
+
+# Ignore temporary files
+*.tmp
+*.temp
+*.swp
+*.bak
+*.old
+
+# Ignore generated files
+*.out
+*.class
+
+# Ignore editor specific files
+*.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Ignore OS specific files
+.DS_Store
+Thumbs.db

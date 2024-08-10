@@ -1,29 +1,73 @@
 #include "VectorMath.hpp"
 
-Vector3 Vector3Add(Vector3 v1, Vector3 v2)
+// Vector2 Operations
+auto Vector2Distance(Vector2 v1, Vector2 v2) -> float
+{
+    float result = sqrtf((v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y));
+    return result;
+}
+
+// Vector3 Arithmetic Operations
+auto Vector3Add(Vector3 v1, Vector3 v2) -> Vector3
 {
     Vector3 result = {v1.x + v2.x, v1.y + v2.y, v1.z + v2.z};
     return result;
 }
 
-Vector3 Vector3Subtract(Vector3 v1, Vector3 v2)
+auto Vector3Subtract(Vector3 v1, Vector3 v2) -> Vector3
 {
     Vector3 result = {v1.x - v2.x, v1.y - v2.y, v1.z - v2.z};
     return result;
 }
 
-Vector3 Vector3Scale(Vector3 v, float scalar)
+auto Vector3Divide(Vector3 v1, Vector3 v2) -> Vector3
+{
+    Vector3 result = {v1.x / v2.x, v1.y / v2.y, v1.z / v2.z};
+    return result;
+}
+
+auto Vector3Scale(Vector3 v, float scalar) -> Vector3
 {
     Vector3 result = {v.x * scalar, v.y * scalar, v.z * scalar};
     return result;
 }
 
-float Vector3Length(const Vector3 v)
+auto Vector3Negate(Vector3 v) -> Vector3
+{
+    Vector3 result = {-v.x, -v.y, -v.z};
+    return result;
+}
+
+// Vector3 Dot and Cross Products
+auto Vector3DotProduct(Vector3 v1, Vector3 v2) -> float
+{
+    float result = (v1.x * v2.x + v1.y * v2.y + v1.z * v2.z);
+    return result;
+}
+
+auto Vector3CrossProduct(Vector3 v1, Vector3 v2) -> Vector3
+{
+    Vector3 result = {v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x};
+    return result;
+}
+
+// Vector3 Distance and Length Operations
+auto Vector3Distance(Vector3 v1, Vector3 v2) -> float
+{
+    float result = 0.0f;
+    float dx = v2.x - v1.x;
+    float dy = v2.y - v1.y;
+    float dz = v2.z - v1.z;
+    result = sqrtf(dx * dx + dy * dy + dz * dz);
+    return result;
+}
+
+auto Vector3Length(const Vector3 v) -> float
 {
     return sqrtf(v.x * v.x + v.y * v.y + v.z * v.z);
 }
 
-Vector3 Vector3Normalize(Vector3 v)
+auto Vector3Normalize(Vector3 v) -> Vector3
 {
     float length = Vector3Length(v);
     if (length != 0.0f)
@@ -36,22 +80,14 @@ Vector3 Vector3Normalize(Vector3 v)
     return v;
 }
 
-Vector3 Vector3Transform(Vector3 v, Matrix mat)
+// Vector3 Equality Check
+auto Vector3Equals(const Vector3 &a, const Vector3 &b) -> bool
 {
-    Vector3 result = {0};
-
-    float x = v.x;
-    float y = v.y;
-    float z = v.z;
-
-    result.x = mat.m0 * x + mat.m4 * y + mat.m8 * z + mat.m12;
-    result.y = mat.m1 * x + mat.m5 * y + mat.m9 * z + mat.m13;
-    result.z = mat.m2 * x + mat.m6 * y + mat.m10 * z + mat.m14;
-
-    return result;
+    return a.x == b.x && a.y == b.y && a.z == b.z;
 }
 
-Matrix MatrixRotateXYZ(Vector3 angle)
+// Matrix Operations
+auto MatrixRotateXYZ(Vector3 angle) -> Matrix
 {
     Matrix result = {1.0f, 0.0f, 0.0f, 0.0f,
                      0.0f, 1.0f, 0.0f, 0.0f,
@@ -80,7 +116,7 @@ Matrix MatrixRotateXYZ(Vector3 angle)
     return result;
 }
 
-Matrix MatrixTranslate(float x, float y, float z)
+auto MatrixTranslate(float x, float y, float z) -> Matrix
 {
     Matrix result = {1.0f, 0.0f, 0.0f, x,
                      0.0f, 1.0f, 0.0f, y,
@@ -90,9 +126,9 @@ Matrix MatrixTranslate(float x, float y, float z)
     return result;
 }
 
-Matrix MatrixMultiply(Matrix left, Matrix right)
+auto MatrixMultiply(Matrix left, Matrix right) -> Matrix
 {
-    Matrix result = {0};
+    Matrix result;
 
     result.m0 = left.m0 * right.m0 + left.m1 * right.m4 + left.m2 * right.m8 + left.m3 * right.m12;
     result.m1 = left.m0 * right.m1 + left.m1 * right.m5 + left.m2 * right.m9 + left.m3 * right.m13;
@@ -110,6 +146,22 @@ Matrix MatrixMultiply(Matrix left, Matrix right)
     result.m13 = left.m12 * right.m1 + left.m13 * right.m5 + left.m14 * right.m9 + left.m15 * right.m13;
     result.m14 = left.m12 * right.m2 + left.m13 * right.m6 + left.m14 * right.m10 + left.m15 * right.m14;
     result.m15 = left.m12 * right.m3 + left.m13 * right.m7 + left.m14 * right.m11 + left.m15 * right.m15;
+
+    return result;
+}
+
+// Vector3 Transformation
+auto Vector3Transform(Vector3 v, Matrix mat) -> Vector3
+{
+    Vector3 result;
+
+    float x = v.x;
+    float y = v.y;
+    float z = v.z;
+
+    result.x = mat.m0 * x + mat.m4 * y + mat.m8 * z + mat.m12;
+    result.y = mat.m1 * x + mat.m5 * y + mat.m9 * z + mat.m13;
+    result.z = mat.m2 * x + mat.m6 * y + mat.m10 * z + mat.m14;
 
     return result;
 }

@@ -1,36 +1,21 @@
 #include "ThetaStar.hpp"
 #include "Obstacles.hpp"
+#include "NavMesh.hpp"
+#include "Polygons.hpp"
 
-void NavMesh::addVertex(const Point &p)
+auto heuristic(const Point &p1, const Point &p2) -> float
 {
-    vertices.push_back(p);
+    return static_cast<float>(std::sqrt(std::pow(p1.x - p2.x, 2) +
+                                        std::pow(p1.y - p2.y, 2) +
+                                        std::pow(p1.z - p2.z, 2)));
 }
 
-void NavMesh::addEdge(const Point &p1, const Point &p2, float cost)
+auto lineOfSight(const Point &s, const Point &sPrime, const std::vector<Polygon> &polygons) -> bool
 {
-    edges.emplace_back(p1, p2, cost);
-}
-
-void NavMesh::clear()
-{
-    vertices.clear();
-    edges.clear();
-}
-
-float heuristic(const Point &p1, const Point &p2)
-{
-    return std::sqrt(std::pow(p1.x - p2.x, 2) +
-                     std::pow(p1.y - p2.y, 2) +
-                     std::pow(p1.z - p2.z, 2));
-}
-
-bool lineOfSight(const Point &s, const Point &sPrime, const std::vector<Vector3> &obstaclePositions, float obstacleSize)
-{
-    Vector3 start = {s.x, s.y, s.z};
-    Vector3 end = {sPrime.x, sPrime.y, sPrime.z};
-    for (const auto &obstacle : obstaclePositions)
+    // Check for intersection with polygons
+    for (const auto &polygon : polygons)
     {
-        if (segmentIntersectsObstacle(start, end, obstacle, obstacleSize))
+        if (lineIntersectsPolygonLoS(s, sPrime, polygon))
         {
             return false;
         }
@@ -38,8 +23,11 @@ bool lineOfSight(const Point &s, const Point &sPrime, const std::vector<Vector3>
     return true;
 }
 
-std::vector<Point> thetaStar(const NavMesh &mesh, const Point &start, const Point &goal, const std::vector<Vector3> &obstaclePositions, float obstacleSize)
+auto thetaStar(NavMesh &mesh, const Point &start, const Point &goal, const std::vector<Polygon> &obstaclePolygons) -> std::vector<Point>
 {
+    mesh.addVertex(start);
+    mesh.addVertex(goal);
+
     std::priority_queue<Node, std::vector<Node>, std::greater<Node>> openList;
     std::unordered_map<Point, Point, PointHash> cameFrom;
     std::unordered_map<Point, float, PointHash> gScore;
@@ -55,7 +43,7 @@ std::vector<Point> thetaStar(const NavMesh &mesh, const Point &start, const Poin
     gScore[start] = 0.0f;
     fScore[start] = heuristic(start, goal);
 
-    openList.emplace(start, gScore[start], fScore[start]);
+    openList.emplace(Node{start, gScore[start], fScore[start]});
     cameFrom[start] = start;
 
     while (!openList.empty())
@@ -74,17 +62,20 @@ std::vector<Point> thetaStar(const NavMesh &mesh, const Point &start, const Poin
             }
             path.push_back(start);
             std::reverse(path.begin(), path.end());
+
+            mesh.removeVertex(start);
+            mesh.removeVertex(goal);
+
             return path;
         }
 
-        for (const auto &edge : mesh.edges)
+        for (const auto &neighbor : mesh.vertices)
         {
-            if (edge.p1 == current || edge.p2 == current)
+            if (neighbor != current && lineOfSight(current, neighbor, obstaclePolygons))
             {
-                Point neighbor = (edge.p1 == current) ? edge.p2 : edge.p1;
                 Point parent = cameFrom[current];
 
-                if (lineOfSight(parent, neighbor, obstaclePositions, obstacleSize))
+                if (lineOfSight(parent, neighbor, obstaclePolygons))
                 {
                     float tentative_gScore = gScore[parent] + heuristic(parent, neighbor);
                     if (tentative_gScore < gScore[neighbor])
@@ -92,66 +83,27 @@ std::vector<Point> thetaStar(const NavMesh &mesh, const Point &start, const Poin
                         cameFrom[neighbor] = parent;
                         gScore[neighbor] = tentative_gScore;
                         fScore[neighbor] = gScore[neighbor] + heuristic(neighbor, goal);
-                        openList.emplace(neighbor, gScore[neighbor], fScore[neighbor]);
+                        openList.emplace(Node{neighbor, gScore[neighbor], fScore[neighbor]});
                     }
                 }
                 else
                 {
-                    float tentative_gScore = gScore[current] + edge.cost;
+                    float tentative_gScore = gScore[current] + heuristic(current, neighbor);
                     if (tentative_gScore < gScore[neighbor])
                     {
                         cameFrom[neighbor] = current;
                         gScore[neighbor] = tentative_gScore;
                         fScore[neighbor] = gScore[neighbor] + heuristic(neighbor, goal);
-                        openList.emplace(neighbor, gScore[neighbor], fScore[neighbor]);
+                        openList.emplace(Node{neighbor, gScore[neighbor], fScore[neighbor]});
                     }
                 }
             }
         }
     }
 
+    mesh.removeVertex(start);
+    mesh.removeVertex(goal);
+
     // Return empty path if no path is found
     return std::vector<Point>();
-}
-
-bool isPointInsideObstacle(const Point &point, const Vector3 &obstacle, float obstacleSize)
-{
-    float halfSize = obstacleSize / 2;
-    Vector3 min = {obstacle.x - halfSize, 0.0f, obstacle.z - halfSize};
-    Vector3 max = {obstacle.x + halfSize, 0.0f, obstacle.z + halfSize};
-
-    return (point.x > min.x && point.x < max.x && point.z > min.z && point.z < max.z);
-}
-
-Point findNearestValidPoint(const Point &point, const std::vector<Vector3> &obstaclePositions, float obstacleSize)
-{
-    float minDistance = FLT_MAX;
-    Point nearestPoint = point;
-
-    for (const auto &obstacle : obstaclePositions)
-    {
-        if (isPointInsideObstacle(point, obstacle, obstacleSize))
-        {
-            float halfSize = obstacleSize / 2.0f;
-            float buffer = 0.15f;
-            // Define points on the perimeter of the obstacle with buffer
-            std::vector<Point> perimeterPoints = {
-                Point(obstacle.x - halfSize - buffer, 0.0f, point.z),
-                Point(obstacle.x + halfSize + buffer, 0.0f, point.z),
-                Point(point.x, 0.0f, obstacle.z - halfSize - buffer),
-                Point(point.x, 0.0f, obstacle.z + halfSize + buffer)};
-
-            for (const auto &perimeterPoint : perimeterPoints)
-            {
-                float distance = Vector3Length(Vector3Subtract(Vector3{perimeterPoint.x, perimeterPoint.y, perimeterPoint.z}, Vector3{point.x, point.y, point.z}));
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                    nearestPoint = perimeterPoint;
-                }
-            }
-        }
-    }
-
-    return nearestPoint;
 }
