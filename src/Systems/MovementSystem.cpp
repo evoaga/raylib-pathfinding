@@ -8,13 +8,13 @@
 #include "raylib.h"
 #include <cmath>
 
-auto MovementSystem(entt::registry &registry) -> void
+auto PathfindingSystem(entt::registry &registry) -> void
 {
-    auto playerView = registry.view<Player, TransformComponent, Speed, PathComponent, CollisionComponent>();
+    auto playerView = registry.view<Player, TransformComponent, PathComponent>();
     auto obstacleView = registry.view<TransformComponent, Obstacle>();
     auto navMeshView = registry.view<NavMeshComponent>();
 
-    playerView.each([&](entt::entity, auto &transform, auto &speed, auto &pathComponent, auto &collision)
+    playerView.each([&](entt::entity, auto &transform, auto &pathComponent)
                     {
         if (!pathComponent.goalSet) return;
 
@@ -26,24 +26,6 @@ auto MovementSystem(entt::registry &registry) -> void
             pathComponent.end = pathComponent.goalPos;
         };
 
-        auto moveEntity = [&](const Vector3& targetPos) {
-            Vector3 direction = Vector3Subtract(targetPos, transform.position);
-            float distance = Vector3Length(direction);
-            if (distance < 0.1f) {
-                transform.position = targetPos;
-                pathComponent.currentPathIndex++;
-                if (pathComponent.currentPathIndex >= pathComponent.path.size()) {
-                    transform.position = pathComponent.goalPos;
-                    pathComponent.goalSet = false;
-                    pathComponent.isPathBlocked = false;
-                }
-            } else {
-                direction = Vector3Scale(direction, 1.0f / distance);
-                Vector3 movement = Vector3Scale(direction, speed.value * GetFrameTime());
-                transform.position = Vector3Add(transform.position, movement);
-            }
-        };
-
         auto &navMeshComponent = navMeshView.get<NavMeshComponent>(*navMeshView.begin());
 
         if (isPointInAnyPolygon(pathComponent.goalPos, navMeshComponent.obstaclePolygons)) {
@@ -52,31 +34,6 @@ auto MovementSystem(entt::registry &registry) -> void
         
         if (!Vector3Equals(pathComponent.goalPos, pathComponent.end)) {
             updatePath();
-        }
-
-        if (pathComponent.isPathBlocked && !pathComponent.path.empty()) {
-            moveEntity({
-                pathComponent.path[pathComponent.currentPathIndex].x,
-                pathComponent.path[pathComponent.currentPathIndex].y,
-                pathComponent.path[pathComponent.currentPathIndex].z
-            });
-            return;
-        }
-
-        Vector3 direction = Vector3Subtract(pathComponent.goalPos, transform.position);
-        float distance = Vector3Length(direction);
-        direction = Vector3Scale(direction, 1.0f / distance);
-        Vector3 movement = Vector3Scale(direction, speed.value * GetFrameTime());
-        Vector3 newPosition = Vector3Add(transform.position, movement);
-
-        if (distance < Vector3Length(movement)) {
-            transform.position = pathComponent.goalPos;
-            pathComponent.goalSet = false;
-            return;
-        }
-
-        if (!collision.collided) {
-            transform.position = newPosition;
         }
 
         bool isPathBlocked = false;
@@ -112,4 +69,54 @@ auto MovementSystem(entt::registry &registry) -> void
             pathComponent.start = transform.position;
             pathComponent.updateRequested = false;
         } });
+}
+
+auto MovementSystem(entt::registry &registry) -> void
+{
+    auto playerView = registry.view<Player, TransformComponent, Speed, PathComponent>();
+
+    playerView.each([&](entt::entity, auto &transform, auto &speed, auto &pathComponent)
+                    {
+        if (!pathComponent.goalSet) return;
+
+        auto moveEntity = [&](const Vector3& targetPos) {
+            Vector3 direction = Vector3Subtract(targetPos, transform.position);
+            float distance = Vector3Length(direction);
+            if (distance < 0.1f) {
+                transform.position = targetPos;
+                pathComponent.currentPathIndex++;
+                if (pathComponent.currentPathIndex >= pathComponent.path.size()) {
+                    transform.position = pathComponent.goalPos;
+                    pathComponent.goalSet = false;
+                    pathComponent.isPathBlocked = false;
+                }
+            } else {
+                direction = Vector3Scale(direction, 1.0f / distance);
+                Vector3 movement = Vector3Scale(direction, speed.value * GetFrameTime());
+                transform.position = Vector3Add(transform.position, movement);
+            }
+        };
+
+        if (pathComponent.isPathBlocked && !pathComponent.path.empty()) {
+            moveEntity({
+                pathComponent.path[pathComponent.currentPathIndex].x,
+                pathComponent.path[pathComponent.currentPathIndex].y,
+                pathComponent.path[pathComponent.currentPathIndex].z
+            });
+            return;
+        }
+
+        Vector3 direction = Vector3Subtract(pathComponent.goalPos, transform.position);
+        float distance = Vector3Length(direction);
+        direction = Vector3Scale(direction, 1.0f / distance);
+        Vector3 movement = Vector3Scale(direction, speed.value * GetFrameTime());
+        Vector3 newPosition = Vector3Add(transform.position, movement);
+
+        if (distance < Vector3Length(movement)) {
+            transform.position = pathComponent.goalPos;
+            pathComponent.goalSet = false;
+            return;
+        }
+
+            transform.position = newPosition; });
 }

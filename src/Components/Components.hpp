@@ -78,8 +78,3 @@ struct Selected
 {
     bool isSelected;
 };
-
-struct CollisionComponent
-{
-    bool collided = false;
-};

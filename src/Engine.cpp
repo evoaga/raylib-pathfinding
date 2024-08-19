@@ -9,7 +9,6 @@
 #include "Systems/CameraSystem.hpp"
 #include "Systems/PickingSystem.hpp"
 #include "Systems/MinionSystem.hpp"
-#include "Systems/CollisionSystem.hpp"
 #include "NavMesh.hpp"
 #include "ThetaStar.hpp"
 #include "Obstacles.hpp"
@@ -25,7 +24,6 @@ namespace Engine
         registry.emplace<Health>(player, 100, 100);
         registry.emplace<Speed>(player, 5.0f);
         registry.emplace<PathComponent>(player, PathComponent{Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f}, {0}});
-        registry.emplace<CollisionComponent>(player);
         registry.emplace<Player>(player);
 
         // Create camera entity
@@ -43,7 +41,6 @@ namespace Engine
             registry.emplace<Health>(minion, 50, 50);
             registry.emplace<Speed>(minion, 4.0f);
             registry.emplace<PathComponent>(minion, PathComponent{Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f}, {0}, false});
-            registry.emplace<CollisionComponent>(minion);
             registry.emplace<Minion>(minion, i);
         }
 
@@ -91,15 +88,17 @@ namespace Engine
             auto &cameraComponent = cameraView.get<CameraComponent>(cameraView.front());
 
             BeginDrawing();
-
             ClearBackground(RAYWHITE);
             BeginMode3D(cameraComponent.camera);
+
             PickingSystem(registry);
             InputSystem(registry);
-            CollisionSystem(registry);
             MinionSystem(registry);
             SimpleMovementSystem(registry);
+
             MovementSystem(registry);
+            PathfindingSystem(registry);
+
             CameraSystem(registry);
 
             RenderSystem(registry);
