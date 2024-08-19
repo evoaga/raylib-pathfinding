@@ -7,6 +7,8 @@
 #include "../Polygons.hpp"
 #include "raylib.h"
 #include <cmath>
+#include <iostream>
+#include <chrono>
 
 auto PathfindingSystem(entt::registry &registry) -> void
 {
@@ -62,7 +64,16 @@ auto PathfindingSystem(entt::registry &registry) -> void
             Point start = { transform.position.x, transform.position.y, transform.position.z };
             Point goal = { pathComponent.goalPos.x, pathComponent.goalPos.y, pathComponent.goalPos.z };
 
+            // Start measuring time
+            auto startTime = std::chrono::high_resolution_clock::now();
+
             pathComponent.path = thetaStar(navMeshComponent.mesh, start, goal, navMeshComponent.obstaclePolygons);
+
+            // End measuring time
+            auto endTime = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - startTime).count();
+
+            std::cout << "thetaStar execution time: " << duration << " seconds" << std::endl;
 
             pathComponent.isPathBlocked = true;
             pathComponent.currentPathIndex = 0;
