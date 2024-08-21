@@ -12,9 +12,6 @@ set(CMAKE_CXX_COMPILER "C:/Program Files/LLVM/bin/clang++.exe")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Set optimization flags for Release builds
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
-
 # Include FetchContent module for downloading dependencies
 include(FetchContent)
 
@@ -49,11 +46,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE
   ${CMAKE_SOURCE_DIR}/src/Components
   ${CMAKE_SOURCE_DIR}/src/Systems
 )
-
-# Ensure raylib defines are set
-if (MSVC)
-    target_compile_definitions(${PROJECT_NAME} PRIVATE _CRT_SECURE_NO_WARNINGS)
-endif()
 
 # Custom target to build and run the project
 add_custom_target(run
