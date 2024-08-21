@@ -1,6 +1,9 @@
 #include "Obstacles.hpp"
 #include "Components.hpp"
 #include "raylib.h"
+#include <vector>
+#include <utility>
+#include <cstdlib>
 
 auto generateObstaclesTransform(int count, float mapSize) -> std::vector<std::pair<TransformComponent, Obstacle>>
 {

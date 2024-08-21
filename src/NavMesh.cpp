@@ -1,7 +1,6 @@
 #include "NavMesh.hpp"
 #include "Polygons.hpp"
 #include "ThetaStar.hpp"
-#include <vector>
 
 auto BuildNavMesh(NavMesh &mesh, std::vector<Polygon> &obstaclePolygons) -> void
 {

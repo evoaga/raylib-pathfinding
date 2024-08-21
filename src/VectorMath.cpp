@@ -1,6 +1,5 @@
 #include "VectorMath.hpp"
 #include "raylib.h"
-#include <cmath>
 
 // Vector2 Operations
 auto Vector2Distance(Vector2 v1, Vector2 v2) -> float

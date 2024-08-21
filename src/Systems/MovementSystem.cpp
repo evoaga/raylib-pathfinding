@@ -5,10 +5,6 @@
 #include "../Obstacles.hpp"
 #include "../VectorMath.hpp"
 #include "../Polygons.hpp"
-#include "raylib.h"
-#include <cmath>
-#include <iostream>
-#include <chrono>
 
 auto PathfindingSystem(entt::registry &registry) -> void
 {

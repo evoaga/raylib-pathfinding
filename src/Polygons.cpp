@@ -1,12 +1,7 @@
 #include "Polygons.hpp"
 #include "ThetaStar.hpp"
 #include "VectorMath.hpp"
-#include <vector>
-#include <cstddef>
 #include "raylib.h"
-#include <algorithm>
-#include <cfloat>
-#include <cmath>
 
 // Point-in-Polygon Test using Ray-Casting algorithm
 auto isPointInPolygon(const Point &point, const std::vector<Point> &polygon) -> bool

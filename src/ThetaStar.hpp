@@ -80,6 +80,6 @@ struct Node
     }
 };
 
-float heuristic(const Point &p1, const Point &p2);
-bool lineOfSight(const Point &start, const Point &end, const std::vector<Polygon> &polygons);
-std::vector<Point> thetaStar(NavMesh &mesh, const Point &start, const Point &goal, const std::vector<Polygon> &obstaclePolygons);
+auto heuristic(const Point &p1, const Point &p2) -> float;
+auto lineOfSight(const Point &s, const Point &sPrime, const std::vector<Polygon> &polygons) -> bool;
+auto thetaStar(NavMesh &mesh, const Point &start, const Point &goal, const std::vector<Polygon> &obstaclePolygons) -> std::vector<Point>;

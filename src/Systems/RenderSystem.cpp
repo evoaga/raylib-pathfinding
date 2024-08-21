@@ -1,9 +1,7 @@
 #include "RenderSystem.hpp"
 #include "../Components/Components.hpp"
 #include "../ThetaStar.hpp"
-#include "entt/entity/fwd.hpp"
 #include "raylib.h"
-#include <cstddef>
 
 auto RenderSystem(entt::registry &registry) -> void
 {

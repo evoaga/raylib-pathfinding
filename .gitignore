@@ -4,10 +4,6 @@ build/
 # Ignore resources folder
 resources/
 
-# Ignore the build_and_run.ps1 script
-build_and_run.ps1
-
-
 # Ignore .vs and .vscode folders
 .vs/
 .vscode/

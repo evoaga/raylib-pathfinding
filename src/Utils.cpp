@@ -3,10 +3,6 @@
 #include "ThetaStar.hpp"
 #include "VectorMath.hpp"
 #include "raylib.h"
-#include <cstdlib>
-#include <vector>
-#include <cmath>
-#include <utility>
 
 auto GetRandomColor() -> Color
 {

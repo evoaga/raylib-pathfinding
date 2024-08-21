@@ -1,9 +1,7 @@
 #include "CameraSystem.hpp"
 #include "../Components/Components.hpp"
 #include "../VectorMath.hpp"
-#include "entt/entity/fwd.hpp"
 #include "raylib.h"
-#include <cmath>
 
 auto InitCamera(Camera &camera) -> void
 {

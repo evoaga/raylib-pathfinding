@@ -1,6 +1,4 @@
 #include "Components/Components.hpp"
-#include "entt/entity/fwd.hpp"
-#include <vector>
 #include "Utils.hpp"
 #include "NavMesh.hpp"
 #include "Obstacles.hpp"
