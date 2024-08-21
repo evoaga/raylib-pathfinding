@@ -58,7 +58,9 @@ endif()
 # Custom target to build and run the project
 add_custom_target(run
     COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target ${PROJECT_NAME} -- -j 8
+    COMMAND ${CMAKE_COMMAND} -E echo "Running executable..."
     COMMAND ${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${PROJECT_NAME}
     DEPENDS ${PROJECT_NAME}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    USES_TERMINAL
 )
