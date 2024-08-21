@@ -1,6 +1,9 @@
 #include "RenderUISystem.hpp"
 #include "../Components/Components.hpp"
+#include "entt/entity/fwd.hpp"
 #include "raylib.h"
+#include <string>
+#include <cstdint>
 
 auto RenderUISystem(entt::registry &registry) -> void
 {
@@ -13,13 +16,13 @@ auto RenderUISystem(entt::registry &registry) -> void
 
     auto drawHealthBarAboveEntity = [&](const Vector3 &position, const Health &health, const Camera &camera)
     {
-        Vector2 screenPos = GetWorldToScreen(position, camera);
-        float healthPercentage = static_cast<float>(health.value) / health.maxValue;
+        Vector2 const screenPos = GetWorldToScreen(position, camera);
+        float const healthPercentage = static_cast<float>(health.value) / health.maxValue;
 
-        int barWidth = 50;
-        int barHeight = 10;
-        int barX = static_cast<int>(screenPos.x) - barWidth / 2;
-        int barY = static_cast<int>(screenPos.y) - 40;
+        int const barWidth = 50;
+        int const barHeight = 10;
+        int const barX = static_cast<int>(screenPos.x) - barWidth / 2;
+        int const barY = static_cast<int>(screenPos.y) - 40;
 
         DrawRectangle(barX, barY, barWidth, barHeight, GRAY);
         DrawRectangle(barX, barY, static_cast<int>(barWidth * healthPercentage), barHeight, RED);
@@ -28,20 +31,20 @@ auto RenderUISystem(entt::registry &registry) -> void
 
     auto drawHealthBar = [&](int health, int maxHealth)
     {
-        int screenWidth = GetScreenWidth();
-        int screenHeight = GetScreenHeight();
-        float healthPercentage = static_cast<float>(health) / static_cast<float>(maxHealth);
+        int const screenWidth = GetScreenWidth();
+        int const screenHeight = GetScreenHeight();
+        float const healthPercentage = static_cast<float>(health) / static_cast<float>(maxHealth);
 
-        int barWidth = 300;
-        int barHeight = 20;
+        int const barWidth = 300;
+        int const barHeight = 20;
 
-        int barX = (screenWidth - barWidth) / 2;
-        int barY = screenHeight - 50;
+        int const barX = (screenWidth - barWidth) / 2;
+        int const barY = screenHeight - 50;
 
         DrawRectangleLines(barX, barY, barWidth, barHeight, BLACK);
         DrawRectangle(barX + 1, barY + 1, barWidth - 2, barHeight - 2, GRAY);
 
-        int healthBarWidth = static_cast<int>((barWidth - 2) * healthPercentage);
+        int const healthBarWidth = static_cast<int>((barWidth - 2) * healthPercentage);
         DrawRectangle(barX + 1, barY + 1, healthBarWidth, barHeight - 2, RED);
         DrawText(TextFormat("%d / %d", health, maxHealth), barX + (barWidth / 2) - MeasureText(TextFormat("%d / %d", health, maxHealth), 20) / 2, barY, 20, BLACK);
     };
@@ -57,17 +60,17 @@ auto RenderUISystem(entt::registry &registry) -> void
             drawHealthBar(health.value, health.maxValue);
 
             // Draw player coordinates
-            int screenWidth = GetScreenWidth();
-            int screenHeight = GetScreenHeight();
-            std::string positionText = TextFormat("Position: (%.2f, %.2f, %.2f)", transform.position.x, transform.position.y, transform.position.z);
-            int textWidth = MeasureText(positionText.c_str(), 20);
+            int const screenWidth = GetScreenWidth();
+            int const screenHeight = GetScreenHeight();
+            std::string const positionText = TextFormat("Position: (%.2f, %.2f, %.2f)", transform.position.x, transform.position.y, transform.position.z);
+            int const textWidth = MeasureText(positionText.c_str(), 20);
             DrawText(positionText.c_str(), screenWidth - textWidth - 10, screenHeight - 30, 20, BLACK);
         }
     };
 
     auto renderEntityIDs = [&](auto entity, TransformComponent &transform, CameraComponent &cameraComponent)
     {
-        Vector2 screenPos = GetWorldToScreen(transform.position, cameraComponent.camera);
+        Vector2 const screenPos = GetWorldToScreen(transform.position, cameraComponent.camera);
         DrawText(TextFormat("%d", static_cast<uint32_t>(entity)), static_cast<int>(screenPos.x), static_cast<int>(screenPos.y), 20, BLACK);
     };
 

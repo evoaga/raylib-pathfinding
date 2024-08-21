@@ -1,4 +1,12 @@
 #include "Utils.hpp"
+#include "Components.hpp"
+#include "ThetaStar.hpp"
+#include "VectorMath.hpp"
+#include "raylib.h"
+#include <cstdlib>
+#include <vector>
+#include <cmath>
+#include <utility>
 
 auto GetRandomColor() -> Color
 {
@@ -18,23 +26,23 @@ auto vector3ToPoint(const Vector3 &vec) -> Point
 auto generateCubePolygon(const TransformComponent &transform) -> Polygon
 {
     std::vector<Point> points;
-    const float buffer = 0.5f + 0.0001f;
+    const float buffer = 0.5F + 0.0001F;
     const Vector3 &pos = transform.position;
     const Vector3 &rot = transform.rotation;
     const Vector3 &scale = transform.scale;
 
-    std::vector<Vector3> localVertices = {
-        {-scale.x / 2 - buffer, 0.0f, -scale.z / 2 - buffer},
-        {-scale.x / 2 - buffer, 0.0f, scale.z / 2 + buffer},
-        {scale.x / 2 + buffer, 0.0f, scale.z / 2 + buffer},
-        {scale.x / 2 + buffer, 0.0f, -scale.z / 2 - buffer},
+    std::vector<Vector3> const localVertices = {
+        {-scale.x / 2 - buffer, 0.0F, -scale.z / 2 - buffer},
+        {-scale.x / 2 - buffer, 0.0F, scale.z / 2 + buffer},
+        {scale.x / 2 + buffer, 0.0F, scale.z / 2 + buffer},
+        {scale.x / 2 + buffer, 0.0F, -scale.z / 2 - buffer},
     };
 
-    for (auto &vertex : localVertices)
+    for (const auto &vertex : localVertices)
     {
-        float rotatedX = cos(rot.y) * vertex.x - sin(rot.y) * vertex.z;
-        float rotatedZ = sin(rot.y) * vertex.x + cos(rot.y) * vertex.z;
-        points.emplace_back(pos.x + rotatedX, 0.0f, pos.z + rotatedZ);
+        float const rotatedX = cos(rot.y) * vertex.x - sin(rot.y) * vertex.z;
+        float const rotatedZ = sin(rot.y) * vertex.x + cos(rot.y) * vertex.z;
+        points.emplace_back(pos.x + rotatedX, 0.0F, pos.z + rotatedZ);
     }
 
     return Polygon{points};
@@ -49,11 +57,11 @@ auto CheckCollisionAABB(Vector3 position, Vector3 scale, Vector3 obstaclePos, Ve
 
 auto GetMousePosition3D(Camera3D camera) -> Vector3
 {
-    Vector2 mousePosition = GetMousePosition();
-    Ray ray = GetMouseRay(mousePosition, camera);
+    Vector2 const mousePosition = GetMousePosition();
+    Ray const ray = GetMouseRay(mousePosition, camera);
 
     // Calculate the point on the ground plane (y = 0)
-    float t = -ray.position.y / ray.direction.y;
+    float const t = -ray.position.y / ray.direction.y;
     Vector3 mousePosition3D = Vector3Add(ray.position, Vector3Scale(ray.direction, t));
 
     return mousePosition3D;
@@ -62,28 +70,38 @@ auto GetMousePosition3D(Camera3D camera) -> Vector3
 // Function to check if a line segment intersects with a bounding box
 auto CheckCollisionSegmentBox(Vector3 start, Vector3 end, BoundingBox box) -> bool
 {
-    Vector3 d = Vector3Subtract(end, start);
+    Vector3 const d = Vector3Subtract(end, start);
 
     float tmin = (box.min.x - start.x) / d.x;
     float tmax = (box.max.x - start.x) / d.x;
 
     if (tmin > tmax)
+    {
         std::swap(tmin, tmax);
+    }
 
     float tymin = (box.min.z - start.z) / d.z;
     float tymax = (box.max.z - start.z) / d.z;
 
     if (tymin > tymax)
+    {
         std::swap(tymin, tymax);
+    }
 
     if ((tmin > tymax) || (tymin > tmax))
+    {
         return false;
+    }
 
     if (tymin > tmin)
+    {
         tmin = tymin;
+    }
 
     if (tymax < tmax)
+    {
         tmax = tymax;
+    }
 
-    return tmax >= 0.0f && tmin <= 1.0f;
+    return tmax >= 0.0F && tmin <= 1.0F;
 }

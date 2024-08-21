@@ -1,6 +1,0 @@
-"C:\Program Files\JetBrains\CLion 2024.2\bin\cmake\win\x64\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=C:/Program Files/JetBrains/CLion 2024.2/bin/ninja/win/x64/ninja.exe" -G Ninja -S C:\Users\Hakan\Documents\RustFolder\raylib-pathfinding -B C:\Users\Hakan\Documents\RustFolder\raylib-pathfinding\cmake-build-debug
-CMake Error at CMakeLists.txt:1 (cmake_minimum_required):
-  CMake 3.30 or higher is required.  You are running version 3.29.6
-
-
--- Configuring incomplete, errors occurred!

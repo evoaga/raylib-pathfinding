@@ -1,9 +1,11 @@
 #include "VectorMath.hpp"
+#include "raylib.h"
+#include <cmath>
 
 // Vector2 Operations
 auto Vector2Distance(Vector2 v1, Vector2 v2) -> float
 {
-    float result = sqrtf((v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y));
+    float const result = sqrtf((v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y));
     return result;
 }
 
@@ -41,7 +43,7 @@ auto Vector3Negate(Vector3 v) -> Vector3
 // Vector3 Dot and Cross Products
 auto Vector3DotProduct(Vector3 v1, Vector3 v2) -> float
 {
-    float result = (v1.x * v2.x + v1.y * v2.y + v1.z * v2.z);
+    float const result = (v1.x * v2.x + v1.y * v2.y + v1.z * v2.z);
     return result;
 }
 
@@ -54,10 +56,10 @@ auto Vector3CrossProduct(Vector3 v1, Vector3 v2) -> Vector3
 // Vector3 Distance and Length Operations
 auto Vector3Distance(Vector3 v1, Vector3 v2) -> float
 {
-    float result = 0.0f;
-    float dx = v2.x - v1.x;
-    float dy = v2.y - v1.y;
-    float dz = v2.z - v1.z;
+    float result = 0.0F;
+    float const dx = v2.x - v1.x;
+    float const dy = v2.y - v1.y;
+    float const dz = v2.z - v1.z;
     result = sqrtf(dx * dx + dy * dy + dz * dz);
     return result;
 }
@@ -69,10 +71,10 @@ auto Vector3Length(const Vector3 v) -> float
 
 auto Vector3Normalize(Vector3 v) -> Vector3
 {
-    float length = Vector3Length(v);
-    if (length != 0.0f)
+    float const length = Vector3Length(v);
+    if (length != 0.0F)
     {
-        float ilength = 1.0f / length;
+        float const ilength = 1.0F / length;
         v.x *= ilength;
         v.y *= ilength;
         v.z *= ilength;
@@ -89,17 +91,17 @@ auto Vector3Equals(const Vector3 &a, const Vector3 &b) -> bool
 // Matrix Operations
 auto MatrixRotateXYZ(Vector3 angle) -> Matrix
 {
-    Matrix result = {1.0f, 0.0f, 0.0f, 0.0f,
-                     0.0f, 1.0f, 0.0f, 0.0f,
-                     0.0f, 0.0f, 1.0f, 0.0f,
-                     0.0f, 0.0f, 0.0f, 1.0f}; // MatrixIdentity()
+    Matrix result = {1.0F, 0.0F, 0.0F, 0.0F,
+                     0.0F, 1.0F, 0.0F, 0.0F,
+                     0.0F, 0.0F, 1.0F, 0.0F,
+                     0.0F, 0.0F, 0.0F, 1.0F}; // MatrixIdentity()
 
-    float cosz = cosf(-angle.z);
-    float sinz = sinf(-angle.z);
-    float cosy = cosf(-angle.y);
-    float siny = sinf(-angle.y);
-    float cosx = cosf(-angle.x);
-    float sinx = sinf(-angle.x);
+    float const cosz = cosf(-angle.z);
+    float const sinz = sinf(-angle.z);
+    float const cosy = cosf(-angle.y);
+    float const siny = sinf(-angle.y);
+    float const cosx = cosf(-angle.x);
+    float const sinx = sinf(-angle.x);
 
     result.m0 = cosz * cosy;
     result.m1 = (cosz * siny * sinx) - (sinz * cosx);
@@ -118,10 +120,10 @@ auto MatrixRotateXYZ(Vector3 angle) -> Matrix
 
 auto MatrixTranslate(float x, float y, float z) -> Matrix
 {
-    Matrix result = {1.0f, 0.0f, 0.0f, x,
-                     0.0f, 1.0f, 0.0f, y,
-                     0.0f, 0.0f, 1.0f, z,
-                     0.0f, 0.0f, 0.0f, 1.0f};
+    Matrix result = {1.0F, 0.0F, 0.0F, x,
+                     0.0F, 1.0F, 0.0F, y,
+                     0.0F, 0.0F, 1.0F, z,
+                     0.0F, 0.0F, 0.0F, 1.0F};
 
     return result;
 }
@@ -155,9 +157,9 @@ auto Vector3Transform(Vector3 v, Matrix mat) -> Vector3
 {
     Vector3 result;
 
-    float x = v.x;
-    float y = v.y;
-    float z = v.z;
+    float const x = v.x;
+    float const y = v.y;
+    float const z = v.z;
 
     result.x = mat.m0 * x + mat.m4 * y + mat.m8 * z + mat.m12;
     result.y = mat.m1 * x + mat.m5 * y + mat.m9 * z + mat.m13;

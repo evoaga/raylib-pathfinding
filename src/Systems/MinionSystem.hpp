@@ -9,22 +9,17 @@
 #include "raylib.h"
 #include <cmath>
 
-auto MinionSystem(entt::registry &registry) -> void
+auto UpdateMinionPath(entt::registry &registry, const Vector3 &playerPosition) -> void
 {
-    auto minionView = registry.view<Minion, TransformComponent, Speed, PathComponent>();
-    auto playerView = registry.view<Player, TransformComponent>();
+    auto minionView = registry.view<Minion, TransformComponent, PathComponent>();
     auto obstacleView = registry.view<TransformComponent, Obstacle>();
     auto navMeshView = registry.view<NavMeshComponent>();
 
-    const entt::entity playerEntity = *playerView.begin();
-    const auto &playerTransform = playerView.get<TransformComponent>(playerEntity);
-
-    minionView.each([&](entt::entity, auto &minion, auto &transform, auto &speed, auto &pathComponent)
+    minionView.each([&](entt::entity, auto &minion, auto &transform, auto &pathComponent)
                     {
-
         (void)minion;
 
-        const Vector3 newGoalPos = playerTransform.position;
+        const Vector3 newGoalPos = playerPosition;
         const float distanceToNewGoal = Vector3Distance(pathComponent.goalPos, newGoalPos);
 
         // Update goal position if the player has moved significantly
@@ -76,7 +71,16 @@ auto MinionSystem(entt::registry &registry) -> void
                 // Clear the path if the path is not blocked
                 pathComponent.path.clear();
             }
-        }
+        } });
+}
+
+auto MoveMinion(entt::registry &registry) -> void
+{
+    auto minionView = registry.view<Minion, TransformComponent, Speed, PathComponent>();
+
+    minionView.each([&](entt::entity, auto &minion, auto &transform, auto &speed, auto &pathComponent)
+                    {
+        (void)minion;
 
         // Move directly towards the goal if the path is clear
         if (pathComponent.path.empty())
@@ -112,4 +116,15 @@ auto MinionSystem(entt::registry &registry) -> void
                 transform.position = Vector3Add(transform.position, movement);
             }
         } });
+}
+
+auto MinionSystem(entt::registry &registry) -> void
+{
+    auto playerView = registry.view<Player, TransformComponent>();
+
+    const entt::entity playerEntity = *playerView.begin();
+    const auto &playerTransform = playerView.get<TransformComponent>(playerEntity);
+
+    UpdateMinionPath(registry, playerTransform.position);
+    MoveMinion(registry);
 }

@@ -1,6 +1,4 @@
 #include "ThetaStar.hpp"
-#include "Obstacles.hpp"
-#include "NavMesh.hpp"
 #include "Polygons.hpp"
 
 auto heuristic(const Point &p1, const Point &p2) -> float
@@ -28,7 +26,7 @@ auto thetaStar(NavMesh &mesh, const Point &start, const Point &goal, const std::
     mesh.addVertex(start);
     mesh.addVertex(goal);
 
-    std::priority_queue<Node, std::vector<Node>, std::greater<Node>> openList;
+    std::priority_queue<Node, std::vector<Node>, std::greater<>> openList;
     std::unordered_map<Point, Point, PointHash> cameFrom;
     std::unordered_map<Point, float, PointHash> gScore;
     std::unordered_map<Point, float, PointHash> fScore;
@@ -40,10 +38,10 @@ auto thetaStar(NavMesh &mesh, const Point &start, const Point &goal, const std::
         fScore[vertex] = inf;
     }
 
-    gScore[start] = 0.0f;
+    gScore[start] = 0.0F;
     fScore[start] = heuristic(start, goal);
 
-    openList.emplace(Node{start, gScore[start], fScore[start]});
+    openList.emplace(start, gScore[start], fScore[start]);
     cameFrom[start] = start;
 
     while (!openList.empty())
@@ -73,28 +71,28 @@ auto thetaStar(NavMesh &mesh, const Point &start, const Point &goal, const std::
         {
             if (neighbor != current && lineOfSight(current, neighbor, obstaclePolygons))
             {
-                Point parent = cameFrom[current];
+                Point const parent = cameFrom[current];
 
                 if (lineOfSight(parent, neighbor, obstaclePolygons))
                 {
-                    float tentative_gScore = gScore[parent] + heuristic(parent, neighbor);
+                    float const tentative_gScore = gScore[parent] + heuristic(parent, neighbor);
                     if (tentative_gScore < gScore[neighbor])
                     {
                         cameFrom[neighbor] = parent;
                         gScore[neighbor] = tentative_gScore;
                         fScore[neighbor] = gScore[neighbor] + heuristic(neighbor, goal);
-                        openList.emplace(Node{neighbor, gScore[neighbor], fScore[neighbor]});
+                        openList.emplace(neighbor, gScore[neighbor], fScore[neighbor]);
                     }
                 }
                 else
                 {
-                    float tentative_gScore = gScore[current] + heuristic(current, neighbor);
+                    float const tentative_gScore = gScore[current] + heuristic(current, neighbor);
                     if (tentative_gScore < gScore[neighbor])
                     {
                         cameFrom[neighbor] = current;
                         gScore[neighbor] = tentative_gScore;
                         fScore[neighbor] = gScore[neighbor] + heuristic(neighbor, goal);
-                        openList.emplace(Node{neighbor, gScore[neighbor], fScore[neighbor]});
+                        openList.emplace(neighbor, gScore[neighbor], fScore[neighbor]);
                     }
                 }
             }
@@ -105,5 +103,5 @@ auto thetaStar(NavMesh &mesh, const Point &start, const Point &goal, const std::
     mesh.removeVertex(goal);
 
     // Return empty path if no path is found
-    return std::vector<Point>();
+    return {};
 }

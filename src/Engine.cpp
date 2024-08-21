@@ -1,17 +1,20 @@
-#include <entt/entt.hpp>
-#include "raylib.h"
 #include "Components/Components.hpp"
+#include "entt/entity/fwd.hpp"
+#include <vector>
+#include "Utils.hpp"
+#include "NavMesh.hpp"
+#include "Obstacles.hpp"
+#include "Systems/CameraSystem.hpp"
+#include "Systems/InputSystem.hpp"
+#include "Systems/MinionSystem.hpp"
 #include "Systems/MovementSystem.hpp"
-#include "Systems/SimpleMovementSystem.hpp"
+#include "Systems/PickingSystem.hpp"
 #include "Systems/RenderSystem.hpp"
 #include "Systems/RenderUISystem.hpp"
-#include "Systems/InputSystem.hpp"
-#include "Systems/CameraSystem.hpp"
-#include "Systems/PickingSystem.hpp"
-#include "Systems/MinionSystem.hpp"
-#include "NavMesh.hpp"
+#include "Systems/SimpleMovementSystem.hpp"
 #include "ThetaStar.hpp"
-#include "Obstacles.hpp"
+#include "raylib.h"
+#include <entt/entt.hpp>
 
 namespace Engine
 {
@@ -20,38 +23,38 @@ namespace Engine
     {
         // Create player entity
         const auto player = registry.create();
-        registry.emplace<TransformComponent>(player, TransformComponent{Vector3{0.0f, 1.0f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{1.0f, 1.0f, 1.0f}});
+        registry.emplace<TransformComponent>(player, TransformComponent{Vector3{0.0F, 1.0F, 0.0F}, Vector3{0.0F, 0.0F, 0.0F}, Vector3{1.0F, 1.0F, 1.0F}});
         registry.emplace<Health>(player, 100, 100);
-        registry.emplace<Speed>(player, 5.0f);
-        registry.emplace<PathComponent>(player, PathComponent{Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f}, {0}});
+        registry.emplace<Speed>(player, 5.0F);
+        registry.emplace<PathComponent>(player, PathComponent{Vector3{0.0F, 0.0F, 0.0F}, Vector3{0.0F, 0.0F, 0.0F}, Vector3{0.0F, 0.0F, 0.0F}, {0}});
         registry.emplace<Player>(player);
 
         // Create camera entity
         const auto cameraEntity = registry.create();
         Camera camera;
         InitCamera(camera);
-        CameraComponent cameraComponent = CameraComponent{camera, true, 1.0f};
+        auto cameraComponent = CameraComponent{camera, true, 1.0F};
         registry.emplace<CameraComponent>(cameraEntity, cameraComponent);
 
         // Create minions
         for (int i = 0; i < 5; ++i)
         {
             const auto minion = registry.create();
-            registry.emplace<TransformComponent>(minion, TransformComponent{Vector3{(float)i * 2.0f, 1.0f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.5f, 0.5f, 0.5f}});
+            registry.emplace<TransformComponent>(minion, TransformComponent{Vector3{static_cast<float>(i) * 2.0F, 1.0F, 0.0F}, Vector3{0.0F, 0.0F, 0.0F}, Vector3{0.5F, 0.5F, 0.5F}});
             registry.emplace<Health>(minion, 50, 50);
-            registry.emplace<Speed>(minion, 4.0f);
-            registry.emplace<PathComponent>(minion, PathComponent{Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f}, {0}, false});
+            registry.emplace<Speed>(minion, 4.0F);
+            registry.emplace<PathComponent>(minion, PathComponent{Vector3{0.0F, 0.0F, 0.0F}, Vector3{0.0F, 0.0F, 0.0F}, Vector3{0.0F, 0.0F, 0.0F}, {0}, false});
             registry.emplace<Minion>(minion, i);
         }
 
         // Create platform entity
         const auto platform = registry.create();
-        registry.emplace<TransformComponent>(platform, TransformComponent{Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{10.0f, 1.0f, 10.0f}});
+        registry.emplace<TransformComponent>(platform, TransformComponent{Vector3{0.0F, 0.0F, 0.0F}, Vector3{0.0F, 0.0F, 0.0F}, Vector3{10.0F, 1.0F, 10.0F}});
         registry.emplace<Platform>(platform);
 
         // Create navmesh entity
         const auto navmeshEntity = registry.create();
-        auto obstacles = generateObstaclesTransform(120, 80.0f);
+        auto obstacles = generateObstaclesTransform(120, 80.0F);
 
         std::vector<Polygon> obstaclePolygons;
         for (const auto &[transform, type] : obstacles)

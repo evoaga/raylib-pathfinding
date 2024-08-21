@@ -18,7 +18,8 @@ auto PathfindingSystem(entt::registry &registry) -> void
 
     playerView.each([&](entt::entity, auto &transform, auto &pathComponent)
                     {
-        if (!pathComponent.goalSet) return;
+        if (!pathComponent.goalSet) { return;
+}
 
         auto updatePath = [&]() {
             pathComponent.path.clear();
@@ -31,7 +32,7 @@ auto PathfindingSystem(entt::registry &registry) -> void
         auto &navMeshComponent = navMeshView.get<NavMeshComponent>(*navMeshView.begin());
 
         if (isPointInAnyPolygon(pathComponent.goalPos, navMeshComponent.obstaclePolygons)) {
-            pathComponent.goalPos = findNearestValidPoint(pathComponent.goalPos, navMeshComponent.obstaclePolygons, 0.5f);
+            pathComponent.goalPos = findNearestValidPoint(pathComponent.goalPos, navMeshComponent.obstaclePolygons, 0.5F);
         }
         
         if (!Vector3Equals(pathComponent.goalPos, pathComponent.end)) {
@@ -43,8 +44,8 @@ auto PathfindingSystem(entt::registry &registry) -> void
         for (const auto &polygon : navMeshComponent.obstaclePolygons)
         {
             // Convert Vector3 to Point
-            Point startPoint = vector3ToPoint(transform.position);
-            Point goalPoint = vector3ToPoint(pathComponent.goalPos);
+            Point const startPoint = vector3ToPoint(transform.position);
+            Point const goalPoint = vector3ToPoint(pathComponent.goalPos);
 
             if (lineIntersectsPolygon(startPoint, goalPoint, polygon))
             {
@@ -61,8 +62,8 @@ auto PathfindingSystem(entt::registry &registry) -> void
                 obstaclePositions.push_back(obstacleTransform.position);
             }
 
-            Point start = { transform.position.x, transform.position.y, transform.position.z };
-            Point goal = { pathComponent.goalPos.x, pathComponent.goalPos.y, pathComponent.goalPos.z };
+            Point const start = { transform.position.x, transform.position.y, transform.position.z };
+            Point const goal = { pathComponent.goalPos.x, pathComponent.goalPos.y, pathComponent.goalPos.z };
 
             // Start measuring time
             auto startTime = std::chrono::high_resolution_clock::now();
@@ -73,7 +74,7 @@ auto PathfindingSystem(entt::registry &registry) -> void
             auto endTime = std::chrono::high_resolution_clock::now();
             auto duration = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - startTime).count();
 
-            std::cout << "thetaStar execution time: " << duration << " seconds" << std::endl;
+            std::cout << "thetaStar execution time: " << duration << " seconds" << '\n';
 
             pathComponent.isPathBlocked = true;
             pathComponent.currentPathIndex = 0;
@@ -88,12 +89,13 @@ auto MovementSystem(entt::registry &registry) -> void
 
     playerView.each([&](entt::entity, auto &transform, auto &speed, auto &pathComponent)
                     {
-        if (!pathComponent.goalSet) return;
+        if (!pathComponent.goalSet) { return;
+}
 
         auto moveEntity = [&](const Vector3& targetPos) {
             Vector3 direction = Vector3Subtract(targetPos, transform.position);
-            float distance = Vector3Length(direction);
-            if (distance < 0.1f) {
+            float const distance = Vector3Length(direction);
+            if (distance < 0.1F) {
                 transform.position = targetPos;
                 pathComponent.currentPathIndex++;
                 if (pathComponent.currentPathIndex >= pathComponent.path.size()) {
@@ -102,8 +104,8 @@ auto MovementSystem(entt::registry &registry) -> void
                     pathComponent.isPathBlocked = false;
                 }
             } else {
-                direction = Vector3Scale(direction, 1.0f / distance);
-                Vector3 movement = Vector3Scale(direction, speed.value * GetFrameTime());
+                direction = Vector3Scale(direction, 1.0F / distance);
+                Vector3 const movement = Vector3Scale(direction, speed.value * GetFrameTime());
                 transform.position = Vector3Add(transform.position, movement);
             }
         };
@@ -118,10 +120,10 @@ auto MovementSystem(entt::registry &registry) -> void
         }
 
         Vector3 direction = Vector3Subtract(pathComponent.goalPos, transform.position);
-        float distance = Vector3Length(direction);
-        direction = Vector3Scale(direction, 1.0f / distance);
-        Vector3 movement = Vector3Scale(direction, speed.value * GetFrameTime());
-        Vector3 newPosition = Vector3Add(transform.position, movement);
+        float const distance = Vector3Length(direction);
+        direction = Vector3Scale(direction, 1.0F / distance);
+        Vector3 const movement = Vector3Scale(direction, speed.value * GetFrameTime());
+        Vector3 const newPosition = Vector3Add(transform.position, movement);
 
         if (distance < Vector3Length(movement)) {
             transform.position = pathComponent.goalPos;

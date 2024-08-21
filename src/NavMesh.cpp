@@ -1,8 +1,7 @@
-#include "Components/Components.hpp"
 #include "NavMesh.hpp"
-#include "ThetaStar.hpp"
-#include "Obstacles.hpp"
 #include "Polygons.hpp"
+#include "ThetaStar.hpp"
+#include <vector>
 
 auto BuildNavMesh(NavMesh &mesh, std::vector<Polygon> &obstaclePolygons) -> void
 {

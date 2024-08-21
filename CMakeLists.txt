@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.29)
 project(MyProject)
 
+# Set the generator to Ninja
+set(CMAKE_GENERATOR "Ninja")
+
 # Set Clang as the compiler
 set(CMAKE_C_COMPILER "C:/Program Files/LLVM/bin/clang.exe")
 set(CMAKE_CXX_COMPILER "C:/Program Files/LLVM/bin/clang++.exe")
@@ -51,3 +54,11 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 if (MSVC)
     target_compile_definitions(${PROJECT_NAME} PRIVATE _CRT_SECURE_NO_WARNINGS)
 endif()
+
+# Custom target to build and run the project
+add_custom_target(run
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target ${PROJECT_NAME} -- -j 8
+    COMMAND ${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${PROJECT_NAME}
+    DEPENDS ${PROJECT_NAME}
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+)
