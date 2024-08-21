@@ -1,5 +1,4 @@
 #include "Components/Components.hpp"
-#include "Utils.hpp"
 #include "NavMesh.hpp"
 #include "Obstacles.hpp"
 #include "Systems/CameraSystem.hpp"
@@ -11,6 +10,7 @@
 #include "Systems/RenderUISystem.hpp"
 #include "Systems/SimpleMovementSystem.hpp"
 #include "ThetaStar.hpp"
+#include "Utils.hpp"
 #include "raylib.h"
 #include <entt/entt.hpp>
 
@@ -24,7 +24,7 @@ namespace Engine
         registry.emplace<TransformComponent>(player, TransformComponent{Vector3{0.0F, 1.0F, 0.0F}, Vector3{0.0F, 0.0F, 0.0F}, Vector3{1.0F, 1.0F, 1.0F}});
         registry.emplace<Health>(player, 100, 100);
         registry.emplace<Speed>(player, 5.0F);
-        registry.emplace<PathComponent>(player, PathComponent{Vector3{0.0F, 0.0F, 0.0F}, Vector3{0.0F, 0.0F, 0.0F}, Vector3{0.0F, 0.0F, 0.0F}, {0}});
+        registry.emplace<PathComponent>(player, PathComponent{Vector3{0.0F, 0.0F, 0.0F}, Vector3{0.0F, 0.0F, 0.0F}, Vector3{0.0F, 0.0F, 0.0F}, {}});
         registry.emplace<Player>(player);
 
         // Create camera entity
@@ -41,7 +41,7 @@ namespace Engine
             registry.emplace<TransformComponent>(minion, TransformComponent{Vector3{static_cast<float>(i) * 2.0F, 1.0F, 0.0F}, Vector3{0.0F, 0.0F, 0.0F}, Vector3{0.5F, 0.5F, 0.5F}});
             registry.emplace<Health>(minion, 50, 50);
             registry.emplace<Speed>(minion, 4.0F);
-            registry.emplace<PathComponent>(minion, PathComponent{Vector3{0.0F, 0.0F, 0.0F}, Vector3{0.0F, 0.0F, 0.0F}, Vector3{0.0F, 0.0F, 0.0F}, {0}, false});
+            registry.emplace<PathComponent>(minion, PathComponent{Vector3{0.0F, 0.0F, 0.0F}, Vector3{0.0F, 0.0F, 0.0F}, Vector3{0.0F, 0.0F, 0.0F}, {}, false});
             registry.emplace<Minion>(minion, i);
         }
 
@@ -95,7 +95,7 @@ namespace Engine
             PickingSystem(registry);
             InputSystem(registry);
             MinionSystem(registry);
-            SimpleMovementSystem(registry);
+            MovementSystem(registry);
 
             MovementSystem(registry);
             PathfindingSystem(registry);

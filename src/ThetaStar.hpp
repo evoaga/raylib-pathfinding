@@ -1,28 +1,30 @@
 #pragma once
 
-#include "raylib.h"
-#include <vector>
+#include <algorithm>
 #include <queue>
 #include <unordered_map>
 #include <cmath>
-#include <algorithm>
 #include <limits>
 #include <cfloat>
-#include "VectorMath.hpp"
 #include <utility>
+#include <vector>
 
 struct Point
 {
     float x, y, z;
 
-    Point(float x = 0, float y = 0, float z = 0) : x(x), y(y), z(z) {}
+    // Default constructor
+    Point() : x(0), y(0), z(0) {}
 
-    bool operator==(const Point &other) const
+    // Parameterized constructor
+    Point(float x, float y, float z) : x(x), y(y), z(z) {}
+
+    auto operator==(const Point &other) const -> bool
     {
         return x == other.x && y == other.y && z == other.z;
     }
 
-    bool operator!=(const Point &other) const
+    auto operator!=(const Point &other) const -> bool
     {
         return !(*this == other);
     }
@@ -36,11 +38,11 @@ struct Polygon
 // Hash function for Point to use in unordered_map
 struct PointHash
 {
-    std::size_t operator()(const Point &p) const
+    auto operator()(const Point &p) const -> std::size_t
     {
-        std::size_t h1 = std::hash<float>{}(p.x);
-        std::size_t h2 = std::hash<float>{}(p.y);
-        std::size_t h3 = std::hash<float>{}(p.z);
+        std::size_t const h1 = std::hash<float>{}(p.x);
+        std::size_t const h2 = std::hash<float>{}(p.y);
+        std::size_t const h3 = std::hash<float>{}(p.z);
         return h1 ^ (h2 << 1) ^ (h3 << 2);
     }
 };
@@ -74,7 +76,7 @@ struct Node
     Node(Point point, float gCost, float fCost)
         : point(point), gCost(gCost), fCost(fCost) {}
 
-    bool operator>(const Node &other) const
+    auto operator>(const Node &other) const -> bool
     {
         return fCost > other.fCost;
     }

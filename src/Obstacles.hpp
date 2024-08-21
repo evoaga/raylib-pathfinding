@@ -1,8 +1,6 @@
 #pragma once
 
 #include "Components/Components.hpp"
-#include "ThetaStar.hpp"
-#include "raylib.h"
-#include <vector>
+#include <utility>
 
-std::vector<std::pair<TransformComponent, Obstacle>> generateObstaclesTransform(int count, float mapSize);
+auto generateObstaclesTransform(int count, float mapSize) -> std::vector<std::pair<TransformComponent, Obstacle>>;

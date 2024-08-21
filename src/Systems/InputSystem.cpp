@@ -2,6 +2,7 @@
 #include "../Components/Components.hpp"
 #include "../Engine.hpp"
 #include "../Utils.hpp"
+
 #include "raylib.h"
 
 auto InputSystem(entt::registry &registry) -> void
@@ -20,8 +21,9 @@ auto InputSystem(entt::registry &registry) -> void
 
             if (IsKeyPressed(KEY_E)) {
                 health.value -= 10;
-                if (health.value < 0) { health.value = 0;
-}
+                if (health.value < 0) {
+                    health.value = 0;
+                }
             }
         });
 

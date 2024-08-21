@@ -1,9 +1,9 @@
 #pragma once
 
-#include <entt/entt.hpp>
-#include "raylib.h"
+#include <cstddef>
 #include "../ThetaStar.hpp"
-#include <vector>
+#include "raylib.h"
+#include <entt/entt.hpp>
 
 struct CameraComponent
 {

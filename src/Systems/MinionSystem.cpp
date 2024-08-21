@@ -4,6 +4,7 @@
 #include "../VectorMath.hpp"
 #include "../Polygons.hpp"
 #include "../ThetaStar.hpp"
+
 #include "raylib.h"
 #include <cmath>
 #include <vector>
@@ -45,7 +46,7 @@ auto UpdateMinionPath(entt::registry &registry, const Vector3 &playerPosition) -
                 }
                 if (isPathBlocked) {
                     break;
-}
+                }
             }
 
             if (isPathBlocked)

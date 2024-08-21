@@ -1,15 +1,13 @@
 #pragma once
 
-#include "Components/Components.hpp"
 #include "ThetaStar.hpp"
 #include "raylib.h"
-#include <vector>
 
-bool isPointInPolygon(const Point &point, const std::vector<Point> &polygon);
-bool isPointInAnyPolygon(const Vector3 &point, const std::vector<Polygon> &polygons);
-bool lineIntersectsPolygon(const Point &pStart, const Point &pEnd, const Polygon &polygon);
-bool lineIntersectsPolygonLoS(const Point &pStart, const Point &pEnd, const Polygon &polygon);
-Vector3 findNearestValidPoint(const Vector3 &point, const std::vector<Polygon> &polygons, float buffer);
-Point calculateCentroid(const Polygon &polygon);
-float calculateAngle(const Point &center, const Point &point);
+auto isPointInPolygon(const Point &point, const std::vector<Point> &polygon) -> bool;
+auto isPointInAnyPolygon(const Vector3 &point, const std::vector<Polygon> &polygons) -> bool;
+auto lineIntersectsPolygon(const Point &pStart, const Point &pEnd, const Polygon &polygon) -> bool;
+auto lineIntersectsPolygonLoS(const Point &pStart, const Point &pEnd, const Polygon &polygon) -> bool;
+auto findNearestValidPoint(const Vector3 &point, const std::vector<Polygon> &polygons, float buffer) -> Vector3;
+auto calculateCentroid(const Polygon &polygon) -> Point;
+auto calculateAngle(const Point &center, const Point &point) -> float;
 void sortPolygonClockwise(Polygon &polygon);

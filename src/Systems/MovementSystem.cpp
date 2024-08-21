@@ -1,10 +1,11 @@
 #include "MovementSystem.hpp"
 #include "../Utils.hpp"
 #include "../Components/Components.hpp"
-#include "../NavMesh.hpp"
-#include "../Obstacles.hpp"
 #include "../VectorMath.hpp"
 #include "../Polygons.hpp"
+
+#include "../ThetaStar.hpp"
+#include "raylib.h"
 
 auto PathfindingSystem(entt::registry &registry) -> void
 {
@@ -14,8 +15,9 @@ auto PathfindingSystem(entt::registry &registry) -> void
 
     playerView.each([&](entt::entity, auto &transform, auto &pathComponent)
                     {
-        if (!pathComponent.goalSet) { return;
-}
+        if (!pathComponent.goalSet) {
+            return;
+        }
 
         auto updatePath = [&]() {
             pathComponent.path.clear();
@@ -85,8 +87,9 @@ auto MovementSystem(entt::registry &registry) -> void
 
     playerView.each([&](entt::entity, auto &transform, auto &speed, auto &pathComponent)
                     {
-        if (!pathComponent.goalSet) { return;
-}
+        if (!pathComponent.goalSet) {
+            return;
+        }
 
         auto moveEntity = [&](const Vector3& targetPos) {
             Vector3 direction = Vector3Subtract(targetPos, transform.position);

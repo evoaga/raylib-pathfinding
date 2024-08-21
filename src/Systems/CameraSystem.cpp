@@ -1,6 +1,7 @@
 #include "CameraSystem.hpp"
 #include "../Components/Components.hpp"
 #include "../VectorMath.hpp"
+
 #include "raylib.h"
 
 auto InitCamera(Camera &camera) -> void
@@ -33,14 +34,19 @@ auto CameraSystem(entt::registry &registry) -> void
                 float const cameraSpeed = baseCameraSpeed * GetFrameTime() * 60.0F;
                 Vector2 const mousePosition = GetMousePosition();
 
-                if (mousePosition.x <= edgeThreshold) { camera.position.x -= cameraSpeed;
-}
-                if (mousePosition.x >= GetScreenWidth() - edgeThreshold) { camera.position.x += cameraSpeed;
-}
-                if (mousePosition.y <= edgeThreshold) { camera.position.z -= cameraSpeed;
-}
-                if (mousePosition.y >= GetScreenHeight() - edgeThreshold) { camera.position.z += cameraSpeed;
-}
+                if (mousePosition.x <= edgeThreshold) {
+                    camera.position.x -= cameraSpeed;
+                }
+                if (mousePosition.x >= GetScreenWidth() - edgeThreshold) {
+                    camera.position.x += cameraSpeed;
+                }
+                if (mousePosition.y <= edgeThreshold) {
+                    camera.position.z -= cameraSpeed;
+                
+                }
+                if (mousePosition.y >= GetScreenHeight() - edgeThreshold) {
+                    camera.position.z += cameraSpeed;
+                }
 
                 camera.target = Vector3Add(camera.position, { 0.0F, -10.0F, -10.0F });
             } }); });

@@ -1,6 +1,7 @@
 #include <entt/entt.hpp>
 #include "../Components/Components.hpp"
 #include "../VectorMath.hpp"
+
 #include "raylib.h"
 #include <cmath>
 
@@ -11,15 +12,19 @@ auto SimpleMovementSystem(entt::registry &registry) -> void
     view.each([&](entt::entity, auto &transform, auto &speed)
               {
         Vector3 direction = { 0.0F, 0.0F, 0.0F };
-        
-        if (IsKeyDown(KEY_UP)) { direction.z -= 1.0F;
-}
-        if (IsKeyDown(KEY_DOWN)) { direction.z += 1.0F;
-}
-        if (IsKeyDown(KEY_LEFT)) { direction.x -= 1.0F;
-}
-        if (IsKeyDown(KEY_RIGHT)) { direction.x += 1.0F;
-}
+
+        if (IsKeyDown(KEY_UP)) {
+            direction.z -= 1.0F;
+        }
+        if (IsKeyDown(KEY_DOWN)) {
+            direction.z += 1.0F;
+        }
+        if (IsKeyDown(KEY_LEFT)) {
+            direction.x -= 1.0F;
+        }
+        if (IsKeyDown(KEY_RIGHT)) {
+            direction.x += 1.0F;
+        }
 
         float const length = Vector3Length(direction);
         if (length != 0) {
