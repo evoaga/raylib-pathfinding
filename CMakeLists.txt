@@ -4,10 +4,6 @@ project(MyProject)
 # Set the generator to Ninja
 set(CMAKE_GENERATOR "Ninja")
 
-# Set Clang as the compiler
-set(CMAKE_C_COMPILER "C:/Program Files/LLVM/bin/clang.exe")
-set(CMAKE_CXX_COMPILER "C:/Program Files/LLVM/bin/clang++.exe")
-
 # Set C++ Standard
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

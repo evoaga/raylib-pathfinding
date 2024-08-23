@@ -1,4 +1,7 @@
 
+#include <vector>
+#include <utility>
+#include <cstdlib>
 #include "Obstacles.hpp"
 
 #include "Components.hpp"

@@ -1,4 +1,4 @@
-#include <cmath>
+
 #include "VectorMath.hpp"
 
 #include "raylib.h"

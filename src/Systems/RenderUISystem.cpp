@@ -1,5 +1,3 @@
-#include <cstdint>
-#include <string>
 
 #include "RenderUISystem.hpp"
 

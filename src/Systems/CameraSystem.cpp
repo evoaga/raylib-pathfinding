@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include "CameraSystem.hpp"
 
 #include "../Components/Components.hpp"
@@ -16,6 +18,9 @@ auto InitCamera(Camera &camera) -> void
 
 auto CameraSystem(entt::registry &registry) -> void
 {
+    const float screenWidth = static_cast<float>(GetScreenWidth());
+    const float screenHeight = static_cast<float>(GetScreenHeight());
+
     const float baseCameraSpeed = 0.3F;
     const int edgeThreshold = 100;
 
@@ -45,13 +50,13 @@ auto CameraSystem(entt::registry &registry) -> void
                         if (mousePosition.x <= edgeThreshold) {
                             camera.position.x -= cameraSpeed;
                         }
-                        if (mousePosition.x >= GetScreenWidth() - edgeThreshold) {
+                        if (mousePosition.x >= screenWidth - edgeThreshold) {
                             camera.position.x += cameraSpeed;
                         }
                         if (mousePosition.y <= edgeThreshold) {
                             camera.position.z -= cameraSpeed;
                         }
-                        if (mousePosition.y >= GetScreenHeight() - edgeThreshold) {
+                        if (mousePosition.y >= screenHeight - edgeThreshold) {
                             camera.position.z += cameraSpeed;
                         }
 
