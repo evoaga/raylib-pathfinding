@@ -4,6 +4,7 @@
 
 #include "../Components/Components.hpp"
 #include "../VectorMath.hpp"
+#include "entt/entity/fwd.hpp"
 #include "raylib.h"
 
 auto SimpleMovementSystem(entt::registry &registry) -> void

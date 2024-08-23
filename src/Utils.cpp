@@ -1,3 +1,7 @@
+#include <cstdlib>
+#include <vector>
+#include <cmath>
+#include <utility>
 #include "Utils.hpp"
 
 #include "Components.hpp"

@@ -1,3 +1,7 @@
+#include <chrono>
+#include <iostream>
+#include <vector>
+
 #include "MovementSystem.hpp"
 
 #include "../Components/Components.hpp"
@@ -5,6 +9,7 @@
 #include "../ThetaStar.hpp"
 #include "../Utils.hpp"
 #include "../VectorMath.hpp"
+#include "entt/entity/fwd.hpp"
 #include "raylib.h"
 
 auto PathfindingSystem(entt::registry &registry) -> void

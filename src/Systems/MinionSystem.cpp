@@ -1,5 +1,4 @@
 #include <cmath>
-#include <vector>
 
 #include <entt/entt.hpp>
 
@@ -8,6 +7,7 @@
 #include "../ThetaStar.hpp"
 #include "../Utils.hpp"
 #include "../VectorMath.hpp"
+#include "entt/entity/fwd.hpp"
 #include "raylib.h"
 
 auto UpdateMinionPath(entt::registry &registry, const Vector3 &playerPosition) -> void

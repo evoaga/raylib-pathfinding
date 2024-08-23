@@ -1,3 +1,10 @@
+#include <cmath>
+#include <vector>
+#include <queue>
+#include <functional>
+#include <unordered_map>
+#include <limits>
+#include <algorithm>
 #include "ThetaStar.hpp"
 
 #include "Polygons.hpp"

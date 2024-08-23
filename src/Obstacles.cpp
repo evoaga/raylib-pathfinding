@@ -1,6 +1,3 @@
-#include <cstdlib>
-#include <utility>
-#include <vector>
 
 #include "Obstacles.hpp"
 

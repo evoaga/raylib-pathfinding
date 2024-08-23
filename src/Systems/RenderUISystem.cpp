@@ -1,6 +1,10 @@
+#include <cstdint>
+#include <string>
+
 #include "RenderUISystem.hpp"
 
 #include "../Components/Components.hpp"
+#include "entt/entity/fwd.hpp"
 #include "raylib.h"
 
 auto RenderUISystem(entt::registry &registry) -> void

@@ -1,7 +1,10 @@
+#include <cstddef>
+
 #include "RenderSystem.hpp"
 
 #include "../Components/Components.hpp"
 #include "../ThetaStar.hpp"
+#include "entt/entity/fwd.hpp"
 #include "raylib.h"
 
 auto RenderSystem(entt::registry &registry) -> void

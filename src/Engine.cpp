@@ -1,3 +1,5 @@
+#include <vector>
+
 #include <entt/entt.hpp>
 
 #include "Components/Components.hpp"
@@ -10,9 +12,9 @@
 #include "Systems/PickingSystem.hpp"
 #include "Systems/RenderSystem.hpp"
 #include "Systems/RenderUISystem.hpp"
-#include "Systems/SimpleMovementSystem.hpp"
 #include "ThetaStar.hpp"
 #include "Utils.hpp"
+#include "entt/entity/fwd.hpp"
 #include "raylib.h"
 
 namespace Engine

@@ -1,3 +1,4 @@
+#include <vector>
 #include "NavMesh.hpp"
 
 #include "Polygons.hpp"

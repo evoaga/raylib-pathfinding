@@ -3,6 +3,7 @@
 #include "../Components/Components.hpp"
 #include "../Engine.hpp"
 #include "../Utils.hpp"
+#include "entt/entity/fwd.hpp"
 #include "raylib.h"
 
 auto InputSystem(entt::registry &registry) -> void

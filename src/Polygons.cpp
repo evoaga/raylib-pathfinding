@@ -1,3 +1,8 @@
+#include <vector>
+#include <cstddef>
+#include <algorithm>
+#include <cfloat>
+#include <cmath>
 #include "Polygons.hpp"
 
 #include "ThetaStar.hpp"
