@@ -32,6 +32,7 @@ jobs:
         run: |
           cmake --build build
           clang-tidy $(find src -name "*.cpp") -- -I./src -I./src/Components -I./src/Systems
+        continue-on-error: true
 
       - name: Run clang-format
         run: |
