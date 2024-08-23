@@ -1,8 +1,8 @@
 #pragma once
 
-#include "raylib.h"
-
 #include <entt/entt.hpp>
+
+#include "raylib.h"
 
 void InitCamera(Camera &camera);
 void CameraSystem(entt::registry &registry);

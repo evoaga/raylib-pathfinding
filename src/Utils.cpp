@@ -1,4 +1,5 @@
 #include "Utils.hpp"
+
 #include "Components.hpp"
 #include "ThetaStar.hpp"
 #include "VectorMath.hpp"
@@ -6,17 +7,17 @@
 
 auto GetRandomColor() -> Color
 {
-    return Color{
-        static_cast<unsigned char>(rand() % 256), // Red component
-        static_cast<unsigned char>(rand() % 256), // Green component
-        static_cast<unsigned char>(rand() % 256), // Blue component
-        255                                       // Alpha component
+    return Color {
+        static_cast<unsigned char>(rand() % 256),  // Red component
+        static_cast<unsigned char>(rand() % 256),  // Green component
+        static_cast<unsigned char>(rand() % 256),  // Blue component
+        255  // Alpha component
     };
 }
 
 auto vector3ToPoint(const Vector3 &vec) -> Point
 {
-    return Point{vec.x, vec.y, vec.z};
+    return Point {vec.x, vec.y, vec.z};
 }
 
 auto generateCubePolygon(const TransformComponent &transform) -> Polygon
@@ -34,21 +35,23 @@ auto generateCubePolygon(const TransformComponent &transform) -> Polygon
         {scale.x / 2 + buffer, 0.0F, -scale.z / 2 - buffer},
     };
 
-    for (const auto &vertex : localVertices)
-    {
+    for (const auto &vertex : localVertices) {
         float const rotatedX = cos(rot.y) * vertex.x - sin(rot.y) * vertex.z;
         float const rotatedZ = sin(rot.y) * vertex.x + cos(rot.y) * vertex.z;
         points.emplace_back(pos.x + rotatedX, 0.0F, pos.z + rotatedZ);
     }
 
-    return Polygon{points};
+    return Polygon {points};
 }
 
-auto CheckCollisionAABB(Vector3 position, Vector3 scale, Vector3 obstaclePos, Vector3 obstacleScale) -> bool
+auto CheckCollisionAABB(Vector3 position,
+                        Vector3 scale,
+                        Vector3 obstaclePos,
+                        Vector3 obstacleScale) -> bool
 {
-    return (fabs(position.x - obstaclePos.x) * 2 < (scale.x + obstacleScale.x)) &&
-           (fabs(position.y - obstaclePos.y) * 2 < (scale.y + obstacleScale.y)) &&
-           (fabs(position.z - obstaclePos.z) * 2 < (scale.z + obstacleScale.z));
+    return (fabs(position.x - obstaclePos.x) * 2 < (scale.x + obstacleScale.x))
+        && (fabs(position.y - obstaclePos.y) * 2 < (scale.y + obstacleScale.y))
+        && (fabs(position.z - obstaclePos.z) * 2 < (scale.z + obstacleScale.z));
 }
 
 auto GetMousePosition3D(Camera3D camera) -> Vector3
@@ -71,31 +74,26 @@ auto CheckCollisionSegmentBox(Vector3 start, Vector3 end, BoundingBox box) -> bo
     float tmin = (box.min.x - start.x) / d.x;
     float tmax = (box.max.x - start.x) / d.x;
 
-    if (tmin > tmax)
-    {
+    if (tmin > tmax) {
         std::swap(tmin, tmax);
     }
 
     float tymin = (box.min.z - start.z) / d.z;
     float tymax = (box.max.z - start.z) / d.z;
 
-    if (tymin > tymax)
-    {
+    if (tymin > tymax) {
         std::swap(tymin, tymax);
     }
 
-    if ((tmin > tymax) || (tymin > tmax))
-    {
+    if ((tmin > tymax) || (tymin > tmax)) {
         return false;
     }
 
-    if (tymin > tmin)
-    {
+    if (tymin > tmin) {
         tmin = tymin;
     }
 
-    if (tymax < tmax)
-    {
+    if (tymax < tmax) {
         tmax = tymax;
     }
 

@@ -1,9 +1,11 @@
 #pragma once
 
 #include <cstddef>
+
+#include <entt/entt.hpp>
+
 #include "../ThetaStar.hpp"
 #include "raylib.h"
-#include <entt/entt.hpp>
 
 struct CameraComponent
 {
@@ -43,9 +45,19 @@ struct TransformComponent
     Vector3 rotation;
     Vector3 scale;
 
-    TransformComponent() : position({0, 0, 0}), rotation({0, 0, 0}), scale({1, 1, 1}) {}
+    TransformComponent()
+        : position({0, 0, 0})
+        , rotation({0, 0, 0})
+        , scale({1, 1, 1})
+    {
+    }
 
-    TransformComponent(Vector3 pos, Vector3 rot, Vector3 scl) : position(pos), rotation(rot), scale(scl) {}
+    TransformComponent(Vector3 pos, Vector3 rot, Vector3 scl)
+        : position(pos)
+        , rotation(rot)
+        , scale(scl)
+    {
+    }
 };
 
 struct Speed

@@ -4,7 +4,7 @@
 
 namespace Engine
 {
-    void InitEntities(entt::registry &registry);
-    void Run();
-}
+void InitEntities(entt::registry &registry);
+void Run();
+}  // namespace Engine
 // namespace Engine

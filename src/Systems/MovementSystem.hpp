@@ -1,10 +1,10 @@
 #pragma once
 
-#include <entt/entt.hpp>
-
+#include <chrono>
 #include <cmath>
 #include <iostream>
-#include <chrono>
+
+#include <entt/entt.hpp>
 
 void PathfindingSystem(entt::registry &registry);
 void MovementSystem(entt::registry &registry);

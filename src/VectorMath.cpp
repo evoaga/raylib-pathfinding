@@ -1,4 +1,5 @@
 #include "VectorMath.hpp"
+
 #include "raylib.h"
 
 // Vector2 Operations
@@ -48,7 +49,8 @@ auto Vector3DotProduct(Vector3 v1, Vector3 v2) -> float
 
 auto Vector3CrossProduct(Vector3 v1, Vector3 v2) -> Vector3
 {
-    Vector3 result = {v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x};
+    Vector3 result = {
+        v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x};
     return result;
 }
 
@@ -71,8 +73,7 @@ auto Vector3Length(const Vector3 v) -> float
 auto Vector3Normalize(Vector3 v) -> Vector3
 {
     float const length = Vector3Length(v);
-    if (length != 0.0F)
-    {
+    if (length != 0.0F) {
         float const ilength = 1.0F / length;
         v.x *= ilength;
         v.y *= ilength;
@@ -90,10 +91,22 @@ auto Vector3Equals(const Vector3 &a, const Vector3 &b) -> bool
 // Matrix Operations
 auto MatrixRotateXYZ(Vector3 angle) -> Matrix
 {
-    Matrix result = {1.0F, 0.0F, 0.0F, 0.0F,
-                     0.0F, 1.0F, 0.0F, 0.0F,
-                     0.0F, 0.0F, 1.0F, 0.0F,
-                     0.0F, 0.0F, 0.0F, 1.0F}; // MatrixIdentity()
+    Matrix result = {1.0F,
+                     0.0F,
+                     0.0F,
+                     0.0F,
+                     0.0F,
+                     1.0F,
+                     0.0F,
+                     0.0F,
+                     0.0F,
+                     0.0F,
+                     1.0F,
+                     0.0F,
+                     0.0F,
+                     0.0F,
+                     0.0F,
+                     1.0F};  // MatrixIdentity()
 
     float const cosz = cosf(-angle.z);
     float const sinz = sinf(-angle.z);
@@ -119,10 +132,8 @@ auto MatrixRotateXYZ(Vector3 angle) -> Matrix
 
 auto MatrixTranslate(float x, float y, float z) -> Matrix
 {
-    Matrix result = {1.0F, 0.0F, 0.0F, x,
-                     0.0F, 1.0F, 0.0F, y,
-                     0.0F, 0.0F, 1.0F, z,
-                     0.0F, 0.0F, 0.0F, 1.0F};
+    Matrix result = {
+        1.0F, 0.0F, 0.0F, x, 0.0F, 1.0F, 0.0F, y, 0.0F, 0.0F, 1.0F, z, 0.0F, 0.0F, 0.0F, 1.0F};
 
     return result;
 }
@@ -139,14 +150,22 @@ auto MatrixMultiply(Matrix left, Matrix right) -> Matrix
     result.m5 = left.m4 * right.m1 + left.m5 * right.m5 + left.m6 * right.m9 + left.m7 * right.m13;
     result.m6 = left.m4 * right.m2 + left.m5 * right.m6 + left.m6 * right.m10 + left.m7 * right.m14;
     result.m7 = left.m4 * right.m3 + left.m5 * right.m7 + left.m6 * right.m11 + left.m7 * right.m15;
-    result.m8 = left.m8 * right.m0 + left.m9 * right.m4 + left.m10 * right.m8 + left.m11 * right.m12;
-    result.m9 = left.m8 * right.m1 + left.m9 * right.m5 + left.m10 * right.m9 + left.m11 * right.m13;
-    result.m10 = left.m8 * right.m2 + left.m9 * right.m6 + left.m10 * right.m10 + left.m11 * right.m14;
-    result.m11 = left.m8 * right.m3 + left.m9 * right.m7 + left.m10 * right.m11 + left.m11 * right.m15;
-    result.m12 = left.m12 * right.m0 + left.m13 * right.m4 + left.m14 * right.m8 + left.m15 * right.m12;
-    result.m13 = left.m12 * right.m1 + left.m13 * right.m5 + left.m14 * right.m9 + left.m15 * right.m13;
-    result.m14 = left.m12 * right.m2 + left.m13 * right.m6 + left.m14 * right.m10 + left.m15 * right.m14;
-    result.m15 = left.m12 * right.m3 + left.m13 * right.m7 + left.m14 * right.m11 + left.m15 * right.m15;
+    result.m8 =
+        left.m8 * right.m0 + left.m9 * right.m4 + left.m10 * right.m8 + left.m11 * right.m12;
+    result.m9 =
+        left.m8 * right.m1 + left.m9 * right.m5 + left.m10 * right.m9 + left.m11 * right.m13;
+    result.m10 =
+        left.m8 * right.m2 + left.m9 * right.m6 + left.m10 * right.m10 + left.m11 * right.m14;
+    result.m11 =
+        left.m8 * right.m3 + left.m9 * right.m7 + left.m10 * right.m11 + left.m11 * right.m15;
+    result.m12 =
+        left.m12 * right.m0 + left.m13 * right.m4 + left.m14 * right.m8 + left.m15 * right.m12;
+    result.m13 =
+        left.m12 * right.m1 + left.m13 * right.m5 + left.m14 * right.m9 + left.m15 * right.m13;
+    result.m14 =
+        left.m12 * right.m2 + left.m13 * right.m6 + left.m14 * right.m10 + left.m15 * right.m14;
+    result.m15 =
+        left.m12 * right.m3 + left.m13 * right.m7 + left.m14 * right.m11 + left.m15 * right.m15;
 
     return result;
 }

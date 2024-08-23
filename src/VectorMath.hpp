@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+
 #include "raylib.h"
 
 // Vector2 Operations
