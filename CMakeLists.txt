@@ -27,6 +27,14 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(entt)
 
+# Fetch nlohmann/json
+FetchContent_Declare(
+  json
+  GIT_REPOSITORY https://github.com/nlohmann/json.git
+  GIT_TAG v3.11.3
+)
+FetchContent_MakeAvailable(json)
+
 # Specify the source files
 file(GLOB PROJECT_SOURCES "src/*.cpp" "src/Components/*.hpp" "src/Systems/*.hpp" "src/Systems/*.cpp")
 
@@ -39,6 +47,7 @@ target_link_libraries(${PROJECT_NAME} raylib)
 # Include directories for headers
 target_include_directories(${PROJECT_NAME} PRIVATE 
   ${entt_SOURCE_DIR}/src
+  ${json_SOURCE_DIR}/include
   ${CMAKE_SOURCE_DIR}/src/Components
   ${CMAKE_SOURCE_DIR}/src/Systems
 )

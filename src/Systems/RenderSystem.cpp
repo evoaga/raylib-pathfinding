@@ -1,4 +1,3 @@
-
 #include "RenderSystem.hpp"
 
 #include "../Components/Components.hpp"

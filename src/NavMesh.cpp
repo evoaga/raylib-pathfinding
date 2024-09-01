@@ -1,4 +1,3 @@
-
 #include "NavMesh.hpp"
 
 #include "Polygons.hpp"

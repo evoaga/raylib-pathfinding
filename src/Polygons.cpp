@@ -1,4 +1,3 @@
-
 #include "Polygons.hpp"
 
 #include "ThetaStar.hpp"
