@@ -36,7 +36,12 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(json)
 
 # Specify the source files
-file(GLOB PROJECT_SOURCES "src/*.cpp" "src/Components/*.hpp" "src/Systems/*.hpp" "src/Systems/*.cpp")
+file(GLOB PROJECT_SOURCES 
+  "src/*.cpp" 
+  "src/Components/*.hpp" 
+  "src/Systems/*.hpp" 
+  "src/Systems/*.cpp"
+)
 
 # Your project's source files
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
@@ -52,11 +57,18 @@ target_include_directories(${PROJECT_NAME} PRIVATE
   ${CMAKE_SOURCE_DIR}/src/Systems
 )
 
+# Add compiler flags to disable exceptions
+target_compile_options(${PROJECT_NAME} PRIVATE
+  $<$<CXX_COMPILER_ID:GNU>:-fno-exceptions>
+  $<$<CXX_COMPILER_ID:Clang>:-fno-exceptions>
+  $<$<CXX_COMPILER_ID:MSVC>:/EHs->
+)
+
 # Custom target to build and run the project
 add_custom_target(run
     COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target ${PROJECT_NAME} -- -j 8
     COMMAND ${CMAKE_COMMAND} -E echo "Running executable..."
-    COMMAND ${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${PROJECT_NAME}
+    COMMAND $<TARGET_FILE:${PROJECT_NAME}>
     DEPENDS ${PROJECT_NAME}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     USES_TERMINAL
