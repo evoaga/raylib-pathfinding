@@ -1,7 +1,5 @@
 #include "Engine.hpp"
 
-auto main() -> int
-{
-    Engine::Run();
-    return 0;
-}
+#define fn auto
+
+fn main() -> int { Engine::Run(); }
