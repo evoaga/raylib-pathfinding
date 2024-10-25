@@ -35,6 +35,14 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(json)
 
+# Add raymath and rayimage libraries
+add_subdirectory(src/raymath)
+add_subdirectory(src/rayimage)
+
+# Add lodepng sources
+set(LODEPNG_SRC ${CMAKE_SOURCE_DIR}/src/libs/lodepng/lodepng.cpp)
+set(LODEPNG_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/libs/lodepng)
+
 # Specify the source files
 file(GLOB PROJECT_SOURCES 
   "src/*.cpp" 
@@ -43,18 +51,19 @@ file(GLOB PROJECT_SOURCES
   "src/Systems/*.cpp"
 )
 
-# Your project's source files
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
+# Define the executable and include lodepng
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${LODEPNG_SRC})
 
-# Link raylib to your project
-target_link_libraries(${PROJECT_NAME} raylib)
-
-# Include directories for headers
+# Link raylib, raymath, rayimage, and add lodepng include directory
+target_link_libraries(${PROJECT_NAME} raylib raymath rayimage)
 target_include_directories(${PROJECT_NAME} PRIVATE 
   ${entt_SOURCE_DIR}/src
   ${json_SOURCE_DIR}/include
+  ${LODEPNG_INCLUDE_DIR}  # Add lodepng include directory
   ${CMAKE_SOURCE_DIR}/src/Components
   ${CMAKE_SOURCE_DIR}/src/Systems
+  ${PROJECT_SOURCE_DIR}/src/raymath
+  ${PROJECT_SOURCE_DIR}/src/rayimage
 )
 
 # Add compiler flags to disable exceptions
@@ -73,3 +82,4 @@ add_custom_target(run
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     USES_TERMINAL
 )
+
