@@ -8,26 +8,19 @@
 
 auto InputSystem(entt::registry &registry) -> void
 {
-    auto playerView = registry.view<Player, Health, PathComponent>();
+    auto playerView = registry.view<Player, PathComponent>();
     auto cameraView = registry.view<CameraComponent>();
 
     cameraView.each(
         [&](CameraComponent &cameraComponent)
         {
             playerView.each(
-                [&](entt::entity, Health &health, PathComponent &pathComponent)
+                [&](entt::entity, PathComponent &pathComponent)
                 {
-                    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+                    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                         pathComponent.goalSet = true;
                         pathComponent.goalPos = GetMousePosition3D(cameraComponent.camera);
                         pathComponent.updateRequested = true;
-                    }
-
-                    if (IsKeyPressed(KEY_E)) {
-                        health.value -= 10;
-                        if (health.value < 0) {
-                            health.value = 0;
-                        }
                     }
                 });
 

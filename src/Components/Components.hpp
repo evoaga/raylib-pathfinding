@@ -28,13 +28,6 @@ struct Obstacle
     Color color;
 };
 
-struct Health
-{
-    int value;
-    int maxValue;
-    float healthRegen;
-};
-
 struct Minion
 {
     int id;

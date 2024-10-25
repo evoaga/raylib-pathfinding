@@ -26,7 +26,6 @@ auto InitEntities(entt::registry &registry) -> void
         player,
         TransformComponent {
             Vector3 {0.0F, 1.0F, 0.0F}, Vector3 {0.0F, 0.0F, 0.0F}, Vector3 {1.0F, 1.0F, 1.0F}});
-    registry.emplace<Health>(player, 100, 100);
     registry.emplace<Speed>(player, 5.0F);
     registry.emplace<PathComponent>(player,
                                     PathComponent {Vector3 {0.0F, 0.0F, 0.0F},
@@ -50,7 +49,6 @@ auto InitEntities(entt::registry &registry) -> void
             TransformComponent {Vector3 {static_cast<float>(i) * 2.0F, 1.0F, 0.0F},
                                 Vector3 {0.0F, 0.0F, 0.0F},
                                 Vector3 {0.5F, 0.5F, 0.5F}});
-        registry.emplace<Health>(minion, 50, 50);
         registry.emplace<Speed>(minion, 4.0F);
         registry.emplace<PathComponent>(minion,
                                         PathComponent {Vector3 {0.0F, 0.0F, 0.0F},
